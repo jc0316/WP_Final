@@ -1,0 +1,383 @@
+/*layout*/
+.startMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+h1 {
+    height: 25vh;
+    font-size: 200px;
+    font-family: "Comic Sans MS";
+    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h1:hover {
+    cursor: help;
+    color: #FFAB9D;
+    transform:rotate(5deg);
+}
+
+.vs {
+    text-align: center;
+}
+
+.resign {
+    margin-left: 60%;
+}
+
+button {
+    outline: none;
+}
+.btn {
+    text-decoration: none;
+    color: #111;
+    position: relative;
+    padding: 19px 22px;
+    transition: all .2s ease;
+    font-family: "Comic Sans MS";
+    width: 30%;
+}
+      
+
+.btn:active{
+    transform: scale(.96);
+}
+
+.btn:hover:before{
+    width: 100%;
+    background: #FFAB9D;
+}
+
+.btn:hover svg{
+    transform: translateX(0);
+}
+
+.btn:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 28px;
+    background:#FFAB9D;
+    width: 56px;
+    height: 56px;
+    transition: all .3s ease;
+}
+
+.btn span{
+    position: relative;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 900;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+.btn svg{
+    position: relative;
+    top: 0;
+    margin-left: 10px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #111;
+    stroke-width: 2;
+    transform: translateX(-5px);
+    transition: all .3s ease;
+}
+
+.startbtn {
+    margin: 5px;
+    width: 250px;
+    height: 50px;
+    border-radius: 5px;
+    font-size: 30px;
+    font-family: "Comic Sans MS";
+}
+
+.startbtn:focus {
+    outline: none;
+}
+
+.game {
+    display: flex;
+    margin: 0px;
+    justify-content: space-between;
+}
+
+.right{
+    margin-right: 10%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.left{
+    margin-left: 10%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-right: 0%;
+    flex-direction: column;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.board{
+    margin:50px;
+    border: 5px solid black;
+    box-shadow: 3px 30px 30px grey
+}
+.piece{
+    width: 10vh;
+    height: 10vh;
+    
+}
+.hint{
+    opacity: 0;
+}
+
+.hint:hover{
+    opacity: 0.5;
+}
+
+.Grid1x1{
+    border: 2px solid black;
+    width: 10.5vh;
+    height: 10.5vh;
+    background: #A8A8A8;
+}
+
+.multi-button {
+    --border-size: 0.125rem;
+    --duration: 250ms;
+    --ease: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --font-family: "Comic Sans MS";
+    --color-primary: white;
+    --color-secondary: black;
+    --color-tertiary: dodgerblue;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --space: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .multi-button {
+    /* height: 100vh; */
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    padding: calc(var(--space) * 2);
+    max-width: 700px;
+    display: flex;
+    width: 100%;
+    /* box-shadow: var(--shadow) 4px 4px; */
+  }
+  
+  .multi-button button {
+    flex-grow: 1;
+    cursor: pointer;
+    position: relative;
+    padding:
+      calc(var(--space) / 1.125)
+      var(--space)
+      var(--space);
+    border: var(--border-size) solid black;
+    color: var(--color-secondary);
+    background-color: var(--color-primary);
+    font-size: 1.5rem;
+    font-family: var(--font-family);
+    text-transform: lowercase;
+    text-shadow: var(--shadow) 2px 2px;
+    transition: flex-grow var(--duration) var(--ease);
+  }
+  
+  .multi-button button + button {
+    border-left: var(--border-size) solid black;
+    margin-left: calc(var(--border-size) * -1);
+  }
+  
+  .multi-button button:hover,
+  .multi-button button:focus {
+    flex-grow: 2;
+    color: white;
+    outline: none;
+    text-shadow: none;
+    background-color: var(--color-secondary);
+  }
+  
+  .multi-button button:focus {
+    outline: var(--border-size) dashed var(--color-primary);
+    outline-offset: calc(var(--border-size) * -3);
+  }
+  
+  .multi-button:hover button:focus:not(:hover) {
+    flex-grow: 1;
+    color: var(--color-secondary);
+    background-color: var(--color-primary);
+    outline-color: var(--color-tertiary);
+  }
+  
+  .multi-button button:active {
+    transform: translateY(var(--border-size));
+  }
+
+  .centered {
+    width: 500px;
+    height: 200px;
+    margin: auto;
+}
+.group {
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+}
+label {
+    position: absolute;
+    top: 36.6666666667px;
+    color: rgba(128, 128, 128, .5);
+    font: 700 36.6666666667px "Comic Sans MS";
+    cursor: text;
+    transition: 0.25s ease;
+}
+input {
+    display: block;
+    width: 100%;
+    padding-top: 36.6666666667px;
+    border: none;
+    border-radius: 0;
+    color:grey;
+    background: white;
+    font-size: 36.6666666667px;
+    transition: 0.3s ease;
+}
+input:valid ~ label {
+    top: 0;
+    font: 700 22px "Comic Sans MS";
+    color: rgba(255, 255, 255, .5);
+}
+input:focus {
+    outline: none;
+}
+input:focus ~ label {
+    top: 0;
+    font: 500 22px "Comic Sans MS";
+    color: grey;
+}
+input:focus ~ .bar:before {
+    transform: translateX(0);
+}
+.bar {
+    background: rgba(255, 255, 255, .5);
+    content: '';
+    width: 500px;
+    height: 1px;
+    transition: 0.3s ease;
+    position: relative;
+}
+.bar:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 150%;
+    background: grey;
+    transform: translateX(-100%);
+}
+::selection {
+    background: rgba(128, 128, 128, .3);
+}
+
+
+.User { 
+    margin: 30px;
+    width: 475.8px;
+    height: 300px;
+    
+    font-family:"Comic Sans MS";
+    
+    border-radius: 0.75rem;
+    box-shadow:  0 22px 70px 4px rgba(0,0,0,0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
+    
+    background: grey;
+    
+    display: grid;
+    grid-template-columns: 40% auto;
+    color: white;
+    
+    align-items: center;
+ }
+ 
+ .card-details {
+    padding: 16px;
+ }
+ 
+ .card-avatar {
+    display: grid;
+    place-items: center;
+ }
+
+ .card-avatar .face {
+    height: 150px;
+    width: 200px;
+ }
+ 
+ .card-about {
+    margin-top: 16px;
+    display: grid;
+    grid-auto-flow: column;
+ }
+ 
+ .item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+ }
+
+ .item .value {
+    font-size: 30px;
+ }
+
+ .item .label{
+    margin-top: 2.4px;
+       font-size: 12px;
+       font-weight: 600;
+       color: black;
+ }
+
+ .value .piece{
+    width: 7vh;
+    height: 7vh;
+    
+}
+
+.endgame {
+    margin-top: 50%;
+    text-align: center;
+    font-family: "Comic Sans MS";
+    font-size: 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.heading {
+    font-size: 6rem;
+    letter-spacing: 6px;
+    margin: 0;
+}
+.heading--stroke-shadow {
+    color: white;
+    text-shadow: -2px 0 #0d1b1e, 0 -2px #0d1b1e, 2px 0 #0d1b1e, 0 2px #0d1b1e, 2px 2px #0d1b1e, -2px -2px #0d1b1e, -2px 2px #0d1b1e, 2px -2px #0d1b1e, 6px 6px grey;
+}
+
+.easteregg{
+    font-size: 28px;
+    font-weight: bold;
+}
