@@ -16,11 +16,11 @@ const App = () => {
     }, [signingIn])
 
   return (
-    <div className="App">
+    <div>
       {
         signingIn ? (<SignIn me={me} setMe={setMe} setSigningIn={setSigningIn} setSigningUp={setSigningUp}/>) 
         : signingUp ? (<SignUp me={me} setMe={setMe} setSigningIn={setSigningIn} setSigningUp={setSigningUp}/>)
-        : (<Othello/>)
+        : (<Othello me={me} setSigningIn={setSigningIn}/>)
       }
     </div>
   )

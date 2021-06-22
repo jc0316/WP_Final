@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react'
-import '../style.css'
+import Matching from "./Matching"
+import MainGame from "./MainGame"
 
 
-function Othello(){
-    return <div className="Othello">
-      <p>Placeholder for game</p>
-    </div>
+function Othello({me, setSigningIn}){
+  const [matching, setMatching] = useState(true)
+
+
+  return (
+  <div className="Othello">
+    {matching ? <Matching setMatching={setMatching} setSigningIn={setSigningIn}/> : <MainGame/>}
+  </div>
+  )
 }
 
 export default Othello
