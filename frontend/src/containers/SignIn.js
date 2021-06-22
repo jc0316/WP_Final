@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn({me, setMe, setSigningIn, setSigningUp}) {
+export default function SignIn(props) {
   const classes = useStyles();
 
   return (
@@ -101,10 +101,7 @@ export default function SignIn({me, setMe, setSigningIn, setSigningUp}) {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={() => {
-                setSigningUp(false)
-                setSigningIn(false)
-                }}
+              onClick={props.pressSignIn}
             >
               Sign In
             </Button>
@@ -114,10 +111,7 @@ export default function SignIn({me, setMe, setSigningIn, setSigningUp}) {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2" onClick={() => {
-                  setSigningUp(true)
-                  setSigningIn(false)
-                  }}>
+                <Link href="#" variant="body2" onClick={props.pressSignUp}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

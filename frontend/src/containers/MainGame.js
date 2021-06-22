@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
-import '../style.css'
 
-
-function Matching(){
-    return <div className="">
-      <p>Placeholder for game</p>
-    </div>
+function MainGame(){
+    return <div></div>
 }
 
-export default Matching
+export default MainGame
