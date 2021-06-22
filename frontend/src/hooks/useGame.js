@@ -1,5 +1,8 @@
 import {useEffect, useState} from 'react'
+import axios from 'axios'
+import { io } from "socket.io-client"
 
+var socket = null;
 let initboard=[
     ['e','e','e','e','e','e','e','e'],
     ['e','e','e','e','e','e','e','e'],
@@ -10,6 +13,11 @@ let initboard=[
     ['e','e','e','e','e','e','e','e'],
     ['e','e','e','e','e','e','e','e']
 ]
+
+const instance = axios.create({ 
+    baseURL: '/api/',
+    credentials: true,
+})
 
 const useBoard=()=>{
     const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
@@ -22,25 +30,114 @@ const useBoard=()=>{
     const [gameresult, setResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
-    const pressSignIn = ()=>{
+    const pressSignIn = async (email,password)=>{
         setStatus('matching')
+
+        let res = await instance.post('/login',{email:email,password:password})
+        if(res.data.status===200){
+            const fullName = res.data.name
+            pressstart(fullName)
+        }
+        else{
+            setMsg({content:res.data.content})
+            //TODO handle error
+        }
     }
 
     const pressSignUp = ()=>{
         setStatus('signup')
+
+        
     }
 
     const pressBackToSignIn = ()=>{
         setStatus('signin')
     }
 
-    const pressRegister = ()=>{
+    const pressRegister = async(firstName,lastName,password,email)=>{
         setStatus('signin')
+        let res = await instance.post('/register',{firstName:firstName,lastName:lastName,password:password,email:email})
+        if(res.data.status===200){
+            //看是要回登錄畫面還是直接開始遊戲
+        }
+        else{
+            setMsg({content:res.data.content})
+            //TODO handle error
+        }
     }
 
     const pressCancel = ()=>{
         setStatus('signin')
     }
+
+
+    const pressstart=(name)=>{
+        if(socket) socket.close()
+        socket=io("/",{query:{auth:name}});//transmit {auth:name} to server , get by using socket.handshake.query in io.on()
+        //The query parameters cannot be updated for the duration of the session, 
+        //so changing the query on the client-side will only be effective 
+        //when the current session gets closed and a new one is created
+        console.log("start connecting")
+        socket.on('connect',()=>{
+            console.log("connect to server with name "+socket.io.opts.query.auth)
+            setStatus('matching')
+        })
+        socket.on('connect_error',(err)=>{
+            setMsg({content:err.message})
+            //handle name exist or name invalid
+            setStatus('initial')
+        })
+        
+        // socket.on('match',(match)=>{
+        //     // match
+        //     // {
+        //     //     matchID:just a num,
+        //     //     turn:'b'or 'w'or'end',
+        //     //     player:{
+        //     //         white_player:{
+        //     //             name:
+        //     //             time:
+        //     //             online: T/F
+        //     //         },
+        //     //         black_player:{
+        //     //             name:
+        //     //             time:
+        //     //             online: T/F
+        //     //         }
+        //     //     },
+        //     //     board:8*8array
+        //     // }
+        //     // console.log(match.board)
+        //     // console.log(match)
+        //     let tmpcolor='e'
+        //     if(socket.io.opts.query.auth===match.player.white_player.name){
+        //         setPlayer(()=>[socket.io.opts.query.auth,'w',match.player.white_player.online]);
+        //         setOppanent(()=>[match.player.black_player.name,'b',match.player.black_player.online])
+        //         tmpcolor='w'
+        //     }else {
+        //         setPlayer(()=>[socket.io.opts.query.auth,'b',match.player.black_player.online]);
+        //         setOppanent(()=>[match.player.white_player.name,'w',match.player.white_player.online])
+        //         tmpcolor='b'
+        //     }
+
+        //     setTurn(()=>match.turn)
+        //     setTime(()=>[match.time,match.player.white_player.time,match.player.black_player.time])
+        //     setBoard(()=>givetips(match.board,tmpcolor,match.turn))
+        //     if (match.turn === 'end'){
+        //         setStatus('endgame');
+        //         console.log("end!!!")
+        //         socket.close()
+        //         socket=null
+        //         setResult(checkwinner(match))
+                
+        //     }else{
+        //         setStatus('start')
+        //     }
+
+        //     // setRole(socket.io.opts.query.auth===match.player.white_player.name?'w':'b')
+        // })
+    }
+
 
     return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel]
 }
