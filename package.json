@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "cd frontend && yarn start",
+    "start": "node backend/src/server.js",
     "server": "cd backend && yarn start"
     }
 }

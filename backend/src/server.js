@@ -20,12 +20,12 @@ var app=express()
 const server = http.createServer(app)
 const io = require('socket.io')(server,{
   cors: {
-    origin: "http://localhost:4000",//frontend
+    origin: "http://localhost:3000",//frontend
     methods: ["GET", "POST"]
   }
 })
 
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect("mongodb+srv://test2:test1234@cluster0.ao77x.mongodb.net/wpFinal?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify:false
@@ -87,7 +87,7 @@ db.once('open', async() => {
     // },1000)
   
     app.use(cors({
-      origin : "http://localhost:4000",
+      origin : "http://localhost:3000",
     credentials: true,
     })) 
     app.use(cookieParser('mv5qhue8ik2c6071gxaz'));
