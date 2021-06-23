@@ -47,8 +47,6 @@ const useBoard=()=>{
 
     const pressSignUp = ()=>{
         setStatus('signup')
-
-        
     }
 
     const pressBackToSignIn = ()=>{

@@ -112,14 +112,12 @@ db.once('open', async() => {
     })
     
     
-    
-    
     app.get('/', (req, res) => {
       // res.sendFile(path.join(__dirname,".." ,'public', 'index.html'));;
       res.sendFile(path.join(__dirname,".." ,"..",'frontend','build', 'index.html'));;
       
     });
-    app.use(express.static(path.join(__dirname,".." ,'build')));
+    app.use(express.static(path.join(__dirname,".." ,"..",'frontend','build')));
     
     const PORT = process.env.port || 4000
      server.listen(PORT, () => {
