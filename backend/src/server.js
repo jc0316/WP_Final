@@ -25,7 +25,7 @@ const io = require('socket.io')(server,{
   }
 })
 
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect("mongodb+srv://test2:test1234@cluster0.ao77x.mongodb.net/wpFinal?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify:false
