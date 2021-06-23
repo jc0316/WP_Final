@@ -16,11 +16,11 @@ var cors = require('cors')
 const http = require('http')
 
 
-app=express()
+var app=express()
 const server = http.createServer(app)
 const io = require('socket.io')(server,{
   cors: {
-    origin: "http://localhost:3000",//frontend
+    origin: "http://localhost:4000",//frontend
     methods: ["GET", "POST"]
   }
 })
@@ -42,7 +42,7 @@ db.on('error', (error) => {
 db.once('open', async() => {
     console.log('MongoDB connected!')
     // await Name.deleteMany({},()=>{/*console.log('clear names')*/})
-    await Match.deleteMany({},()=>{/*console.log('clear names')*/})//delete all matches before
+    //await Match.deleteMany({},()=>{/*console.log('clear names')*/})//delete all matches before
     io.use(cookieParserIO('mv5qhue8ik2c6071gxaz'));
     
     io.use(async (socket,next)=>{
@@ -87,7 +87,7 @@ db.once('open', async() => {
     // },1000)
   
     app.use(cors({
-      origin : "http://localhost:3000",
+      origin : "http://localhost:4000",
     credentials: true,
     })) 
     app.use(cookieParser('mv5qhue8ik2c6071gxaz'));
@@ -116,7 +116,7 @@ db.once('open', async() => {
     
     app.get('/', (req, res) => {
       // res.sendFile(path.join(__dirname,".." ,'public', 'index.html'));;
-      res.sendFile(path.join(__dirname,".." ,'build', 'index.html'));;
+      res.sendFile(path.join(__dirname,".." ,"..",'frontend','build', 'index.html'));;
       
     });
     app.use(express.static(path.join(__dirname,".." ,'build')));

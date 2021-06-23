@@ -93,6 +93,7 @@ const check=(email,password)=>{
 }
 exports.register=async (req,res)=>{
     let {email,password,firstName,lastName} = req.body
+    console.log(email)
     let err= check(email,password)
     if(err){
         res.json({status:400,content:err})
@@ -104,6 +105,7 @@ exports.register=async (req,res)=>{
     }
     await Name.create({email:email,password:hash(password),name:`${firstName}_${lastName}`,history:{win:0,lost:0}},(err)=>{
         if(err) throw err
+        console.log("OK")
     })
     res.cookie('connect_four',newcookie(email), {signed:true}).json({status:200,content:''})
 }

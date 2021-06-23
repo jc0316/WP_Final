@@ -30,9 +30,10 @@ const useBoard=()=>{
     const [gameresult, setResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
-    const pressSignIn = async (email,password)=>{
+    const pressSignIn = async (args)=>{
         setStatus('matching')
-
+        const email = args.email 
+        const password = args.password
         let res = await instance.post('/login',{email:email,password:password})
         if(res.data.status===200){
             const fullName = res.data.name
@@ -54,8 +55,14 @@ const useBoard=()=>{
         setStatus('signin')
     }
 
-    const pressRegister = async(firstName,lastName,password,email)=>{
+    const pressRegister = async(args)=>{
         setStatus('signin')
+        const firstName = args.firstName
+        const lastName = args.lastName
+        const email = args.email
+        const password = args.password
+
+        
         let res = await instance.post('/register',{firstName:firstName,lastName:lastName,password:password,email:email})
         if(res.data.status===200){
             //看是要回登錄畫面還是直接開始遊戲

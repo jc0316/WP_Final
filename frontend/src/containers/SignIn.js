@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState} from 'react'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn(props) {
   const classes = useStyles();
 
+  const [email, setEmail]=useState('')
+  const [password,setPassword]=useState('')
+  
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -83,6 +87,7 @@ export default function SignIn(props) {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -94,6 +99,7 @@ export default function SignIn(props) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               type="submit"
@@ -101,7 +107,7 @@ export default function SignIn(props) {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={props.pressSignIn}
+              onClick={()=>{props.pressSignIn(({password:password,email:email}))}}
             >
               Sign In
             </Button>
