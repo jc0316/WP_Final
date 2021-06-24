@@ -1,8 +1,8 @@
 // import { useState } from 'react'
 import './../style.css'
-import Black from "../pic/black.svg";
-import White from "../pic/white.svg";
-import Can from "../pic/can2.svg";
+import Black from "../images/black.svg";
+import White from "../images/white.svg";
+import Can from "../images/can2.svg";
 
 function Grid1x1(props){
     const renderSwitch=(value)=>{

@@ -6,18 +6,19 @@
     justify-content: center;
 
 }
+
 h1 {
     height: 25vh;
     font-size: 200px;
     font-family: "Comic Sans MS";
-    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
 h1:hover {
     cursor: help;
     color: #FFAB9D;
-    transform:rotate(5deg);
+    transform: rotate(5deg);
 }
 
 .vs {
@@ -25,12 +26,14 @@ h1:hover {
 }
 
 .resign {
-    margin-left: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
 }
 
 button {
     outline: none;
 }
+
 .btn {
     text-decoration: none;
     color: #111;
@@ -40,18 +43,18 @@ button {
     font-family: "Comic Sans MS";
     width: 30%;
 }
-      
 
-.btn:active{
+
+.btn:active {
     transform: scale(.96);
 }
 
-.btn:hover:before{
+.btn:hover:before {
     width: 100%;
     background: #FFAB9D;
 }
 
-.btn:hover svg{
+.btn:hover svg {
     transform: translateX(0);
 }
 
@@ -62,13 +65,13 @@ button {
     left: 0;
     display: block;
     border-radius: 28px;
-    background:#FFAB9D;
+    background: #FFAB9D;
     width: 56px;
     height: 56px;
     transition: all .3s ease;
 }
 
-.btn span{
+.btn span {
     position: relative;
     font-size: 16px;
     line-height: 18px;
@@ -78,7 +81,7 @@ button {
     vertical-align: middle;
 }
 
-.btn svg{
+.btn svg {
     position: relative;
     top: 0;
     margin-left: 10px;
@@ -110,44 +113,50 @@ button {
     justify-content: space-between;
 }
 
-.right{
+.right {
     margin-right: 10%;
+    margin-top: 10%;
+    margin-bottom: 10%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     flex-direction: column;
 }
 
-.left{
+.left {
     margin-left: 10%;
-    margin-top: 0%;
-    margin-bottom: 0%;
+    margin-top: 15%;
+    margin-bottom: 10%;
     margin-right: 0%;
+    justify-content: space-around;
     flex-direction: column;
 }
+
 .row {
     display: flex;
     flex-direction: row;
 }
 
-.board{
-    margin:50px;
+.board {
+    margin: 50px;
     border: 5px solid black;
     box-shadow: 3px 30px 30px grey
 }
-.piece{
+
+.piece {
     width: 10vh;
     height: 10vh;
-    
+
 }
-.hint{
+
+.hint {
     opacity: 0;
 }
 
-.hint:hover{
+.hint:hover {
     opacity: 0.5;
 }
 
-.Grid1x1{
+.Grid1x1 {
     border: 2px solid black;
     width: 10.5vh;
     height: 10.5vh;
@@ -165,9 +174,9 @@ button {
     --shadow: rgba(0, 0, 0, 0.1);
     --space: 1rem;
     box-sizing: border-box;
-  }
-  
-  .multi-button {
+}
+
+.multi-button {
     /* height: 100vh; */
     margin: 0 auto;
     display: grid;
@@ -177,16 +186,14 @@ button {
     display: flex;
     width: 100%;
     /* box-shadow: var(--shadow) 4px 4px; */
-  }
-  
-  .multi-button button {
+}
+
+.multi-button button {
     flex-grow: 1;
     cursor: pointer;
     position: relative;
     padding:
-      calc(var(--space) / 1.125)
-      var(--space)
-      var(--space);
+        calc(var(--space) / 1.125) var(--space) var(--space);
     border: var(--border-size) solid black;
     color: var(--color-secondary);
     background-color: var(--color-primary);
@@ -195,49 +202,51 @@ button {
     text-transform: lowercase;
     text-shadow: var(--shadow) 2px 2px;
     transition: flex-grow var(--duration) var(--ease);
-  }
-  
-  .multi-button button + button {
+}
+
+.multi-button button+button {
     border-left: var(--border-size) solid black;
     margin-left: calc(var(--border-size) * -1);
-  }
-  
-  .multi-button button:hover,
-  .multi-button button:focus {
+}
+
+.multi-button button:hover,
+.multi-button button:focus {
     flex-grow: 2;
     color: white;
     outline: none;
     text-shadow: none;
     background-color: var(--color-secondary);
-  }
-  
-  .multi-button button:focus {
+}
+
+.multi-button button:focus {
     outline: var(--border-size) dashed var(--color-primary);
     outline-offset: calc(var(--border-size) * -3);
-  }
-  
-  .multi-button:hover button:focus:not(:hover) {
+}
+
+.multi-button:hover button:focus:not(:hover) {
     flex-grow: 1;
     color: var(--color-secondary);
     background-color: var(--color-primary);
     outline-color: var(--color-tertiary);
-  }
-  
-  .multi-button button:active {
-    transform: translateY(var(--border-size));
-  }
+}
 
-  .centered {
+.multi-button button:active {
+    transform: translateY(var(--border-size));
+}
+
+.centered {
     width: 500px;
     height: 200px;
     margin: auto;
 }
+
 .group {
     width: 100%;
     height: 100px;
     overflow: hidden;
     position: relative;
 }
+
 label {
     position: absolute;
     top: 36.6666666667px;
@@ -246,33 +255,39 @@ label {
     cursor: text;
     transition: 0.25s ease;
 }
+
 input {
     display: block;
     width: 100%;
     padding-top: 36.6666666667px;
     border: none;
     border-radius: 0;
-    color:grey;
+    color: grey;
     background: white;
     font-size: 36.6666666667px;
     transition: 0.3s ease;
 }
-input:valid ~ label {
+
+input:valid~label {
     top: 0;
     font: 700 22px "Comic Sans MS";
     color: rgba(255, 255, 255, .5);
 }
+
 input:focus {
     outline: none;
 }
-input:focus ~ label {
+
+input:focus~label {
     top: 0;
     font: 500 22px "Comic Sans MS";
     color: grey;
 }
-input:focus ~ .bar:before {
+
+input:focus~.bar:before {
     transform: translateX(0);
 }
+
 .bar {
     background: rgba(255, 255, 255, .5);
     content: '';
@@ -281,6 +296,7 @@ input:focus ~ .bar:before {
     transition: 0.3s ease;
     position: relative;
 }
+
 .bar:before {
     content: '';
     position: absolute;
@@ -289,71 +305,72 @@ input:focus ~ .bar:before {
     background: grey;
     transform: translateX(-100%);
 }
+
 ::selection {
     background: rgba(128, 128, 128, .3);
 }
 
 
-.User { 
+.User {
     margin: 30px;
     width: 475.8px;
     height: 300px;
-    
-    font-family:"Comic Sans MS";
-    
+
+    font-family: "Comic Sans MS";
+
     border-radius: 0.75rem;
-    box-shadow:  0 22px 70px 4px rgba(0,0,0,0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
-    
+    box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
+
     background: grey;
-    
+
     display: grid;
     grid-template-columns: 40% auto;
     color: white;
-    
+
     align-items: center;
- }
- 
- .card-details {
+}
+
+.card-details {
     padding: 16px;
- }
- 
- .card-avatar {
+}
+
+.card-avatar {
     display: grid;
     place-items: center;
- }
+}
 
- .card-avatar .face {
+.card-avatar .face {
     height: 150px;
     width: 200px;
- }
- 
- .card-about {
+}
+
+.card-about {
     margin-top: 16px;
     display: grid;
     grid-auto-flow: column;
- }
- 
- .item {
+}
+
+.item {
     display: flex;
     flex-direction: column;
     margin-bottom: 8px;
- }
+}
 
- .item .value {
+.item .value {
     font-size: 30px;
- }
+}
 
- .item .label{
+.item .label {
     margin-top: 2.4px;
-       font-size: 12px;
-       font-weight: 600;
-       color: black;
- }
+    font-size: 12px;
+    font-weight: 600;
+    color: black;
+}
 
- .value .piece{
+.value .piece {
     width: 7vh;
     height: 7vh;
-    
+
 }
 
 .endgame {
@@ -367,17 +384,19 @@ input:focus ~ .bar:before {
     display: grid;
     grid-template-columns: 1fr;
 }
+
 .heading {
     font-size: 6rem;
     letter-spacing: 6px;
     margin: 0;
 }
+
 .heading--stroke-shadow {
     color: white;
     text-shadow: -2px 0 #0d1b1e, 0 -2px #0d1b1e, 2px 0 #0d1b1e, 0 2px #0d1b1e, 2px 2px #0d1b1e, -2px -2px #0d1b1e, -2px 2px #0d1b1e, 2px -2px #0d1b1e, 6px 6px grey;
 }
 
-.easteregg{
+.easteregg {
     font-size: 28px;
     font-weight: bold;
 }

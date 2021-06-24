@@ -26,9 +26,11 @@ const useBoard=()=>{
     const [turn, setTurn]=useState('e') 
     const [player, setPlayer]=useState(['null','e',true]) 
     const [opponent, setOppanent]=useState(['null', 'e',true])
-    const [status, setStatus] = useState('signin')
-    const [gameresult, setResult] = useState(['',''])
+    const [status, setStatus] = useState('ingame')
+    const [gameResult, setGameResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
+
+    const [gameState, setGameState] = useState('playing')
 
     const pressSignIn = async (args)=>{
         setStatus('matching')
@@ -142,8 +144,28 @@ const useBoard=()=>{
         //     // setRole(socket.io.opts.query.auth===match.player.white_player.name?'w':'b')
         // })
     }
+    const place=(x,y)=>{
+        if(turn!==player[1])return
+    }
+    const handle_1x1_click=(row_index, col_index)=>{
+        place(row_index, col_index)
+    }
 
+    const pressResign=()=>{
+            
+    }
 
-    return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel]
+    const pressLogout=()=>{
+        
+    }
+
+    const pressRestart=()=>{
+        
+    }
+
+    let gameHooks = [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click]
+    let gameButtons = [pressResign, pressLogout, pressRestart]
+
+    return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel, gameHooks, gameButtons]
 }
 export default useBoard;

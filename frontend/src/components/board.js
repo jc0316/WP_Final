@@ -4,10 +4,10 @@ import Grid1x1 from './Grid1x1'
 
 function Board(props){
     const grids=new Array(8)
-    for(var i=0;i<8;i++)
+    for(var i=0; i<8; i++)
     {
       grids[i]=[]
-      for(var j=0;j<8;j++){
+      for(var j=0; j<8; j++){
         grids[i].push(
           <Grid1x1  
             row_index={i} 

@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import './../style.css'
-import Black from "../pic/black.svg";
-import White from "../pic/white.svg";
-import face from "../pic/face.svg";
+import Black from "../images/black.svg";
+import White from "../images/white.svg";
+import face from "../images/face.svg";
 
 function User(props){
     const userstyle={
