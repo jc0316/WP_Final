@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react'
 import Result from '../components/result'
 import Board from '../components/board' 
 import User from '../components/user'
+import QuitButtons from '../components/QuitButtons'
 import './maingame.css'
 
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
+
 
 function MainGame(props){
     const [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click] = props.gameHooks
     const [pressResign, pressLogout, pressRestart] = props.gameButtons
+
+    const [modalVisible, setModalVisible] = useState(false)
 
     const [pieces, setPieces] =useState([2, 2])
 
@@ -17,18 +19,8 @@ function MainGame(props){
         <div className="game">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <div className="left">
-                <div className="resign">
-                    <Button
-                        type="button"
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        size="large"
-                        endIcon={<Icon>send</Icon>}
-                        onClick={pressResign}
-                    >
-                        Quit
-                    </Button>
+                <div className="quit">
+                    <QuitButtons pressResign={pressResign}></QuitButtons>
                 </div>
                 <User 
                     color={player[1]}
@@ -38,7 +30,7 @@ function MainGame(props){
                     connected={player[2]}
                     turn={turn}/>
                 <div className="vs">
-                    <div className="vs-text" data-text="VS">VS</div>
+                    <div className="vs-text" data-text="VERSUS">VERSUS</div>
                 </div>
                 <User 
                     color={opponent[1]}
@@ -67,9 +59,16 @@ function MainGame(props){
     )
 
     /*return (
-        <div>
-            <p>test</p>
-        </div>
+            <QuitModal
+                visible={false}
+                onConfirm={() => {
+                    setModalVisible(false)
+                }}
+                onCancel={() => {
+                    setModalVisible(false)
+                }}
+            >
+            </QuitModal>
     )*/
 }
 

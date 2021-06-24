@@ -19,6 +19,10 @@ function User(props){
         color: props.connected? "black": "red"
     }
 
+    //Todo : Add player stats
+    const stats = [10, 7] // Won/Lost
+    const winPercentage = (stats[0] / (stats[0] + stats[1]))*100
+
     const computeTimeleft=()=>{
         if (props.timeleft<0) return " 0:00"
         let min=Math.floor(props.timeleft/60000)
@@ -31,28 +35,32 @@ function User(props){
 
     return(
         <div className="User">
-            <div className="card-avatar">
-                <img className="face" src={face}/>
+            <div className="card-left">
+                <div className="card-avatar">
+                    <img className="face" src={face}/>
+                </div>
+                <div className="card-stats">
+                    W{stats[0]}/L{stats[1]}
+                </div>
+                <div className="card-stats">
+                    WIN RATE : {Math.floor(winPercentage)}%
+                </div>
             </div>
-            <div className="card-details">
+            <div className="card-right">
                 <div className="turn" style={userstyle}> It's {props.color===props.turn? "your" : "opponent's"} turn!</div>
-                <div className="name" style={namestyle}>{props.player}</div>
-                <div className="occupation" style={occupationstyle}>Name{props.connected?"":"(disconnect)"}</div>
+                <div className="card-name" style={namestyle}>{props.player}</div>
                 
-                <div className="card-about">
-                    <div className="item">
-                        <div className="value">
-                            {props.color==='b'?
-                                (<img className="piece" src={Black}/>):(<img className="piece" src={White}/>)}
+                <div className="card-details">
+                    <div className="card-details piece">
+                        {props.color==='b'? (<img className="card-details piece" src={Black}/>):(<img className="card-details piece" src={White}/>)}
+                    </div>
+                    <div className="card-details data">
+                        <div className="item">
+                            <span className="value">{computeTimeleft()}</span>
                         </div>
-                    </div>
-                    <div className="item">
-                        <span className="value">{computeTimeleft()}</span>
-                        <span className="label">Time left</span>
-                    </div>
-                    <div className="item">
-                        <span className="value">{props.pieces}</span>
-                        <span className="label">Pieces</span>
+                        <div className="item">
+                            <span className="value" style={{fontSize:18}}>{props.pieces} Pieces</span>
+                        </div>
                     </div>
                 </div>
             </div>

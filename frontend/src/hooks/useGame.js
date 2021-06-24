@@ -152,7 +152,7 @@ const useBoard=()=>{
     }
 
     const pressResign=()=>{
-            
+
     }
 
     const pressLogout=()=>{

@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
+
+
 /*layout*/
 .startMenu {
     display: flex;
@@ -21,13 +24,14 @@ h1:hover {
     transform: rotate(5deg);
 }
 
-.vs {
-    text-align: center;
-}
 
-.resign {
-    margin-left: 20%;
-    margin-right: 20%;
+.quit {
+    display: flex;
+    flex-direction: row;
+    width: 12em;
+    height: 2em;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 button {
@@ -124,11 +128,11 @@ button {
 
 .left {
     margin-left: 10%;
-    margin-top: 15%;
-    margin-bottom: 10%;
     margin-right: 0%;
-    justify-content: space-around;
+    display: flex;
+    justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .row {
@@ -139,7 +143,8 @@ button {
 .board {
     margin: 50px;
     border: 5px solid black;
-    box-shadow: 3px 30px 30px grey
+    box-shadow: 15px 30px 50px rgba(255, 255, 255, 0.438),
+        15px 12px 50px rgba(30, 255, 0, 0.5);
 }
 
 .piece {
@@ -157,10 +162,19 @@ button {
 }
 
 .Grid1x1 {
-    border: 2px solid black;
+    border: 3px solid rgb(0, 0, 0);
+    box-shadow: 0 0 2px #000000de,
+        0 0 4px #3f3f3fde,
+        0 0 8px #808080de,
+        0 0 16px #424242de,
+        0 0 32px #000000de;
+
     width: 10.5vh;
     height: 10.5vh;
-    background: #A8A8A8;
+    background: #58a33aea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .multi-button {
@@ -316,38 +330,79 @@ input:focus~.bar:before {
     width: 475.8px;
     height: 300px;
 
-    font-family: "Comic Sans MS";
+    font-family: "Poppins";
 
+    border: 5px solid black;
     border-radius: 0.75rem;
-    box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 22px 100px 4px rgba(255, 255, 255, 0.212),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
 
-    background: grey;
+    background: rgba(255, 255, 255, 0.144);
 
-    display: grid;
+    display: flex;
+    flex-direction: row;
     grid-template-columns: 40% auto;
     color: white;
 
     align-items: center;
 }
 
-.card-details {
-    padding: 16px;
+.card-right {
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+    margin-right: 2em;
+    margin-left: 1em;
+}
+
+.card-name {
+    align-items: center;
+    place-items: center;
+}
+
+.card-left {
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+    margin-right: 1em;
+    margin-left: 2em;
 }
 
 .card-avatar {
     display: grid;
     place-items: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 .card-avatar .face {
     height: 150px;
     width: 200px;
+    align-items: center;
 }
 
-.card-about {
+.card-stats {
+    align-items: center;
+}
+
+.card-details {
     margin-top: 16px;
-    display: grid;
-    grid-auto-flow: column;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.card-details .piece {
+    width: 7vh;
+    height: 7vh;
+    margin-right: 1em;
+    align-items: center;
+}
+
+.card-details .data {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .item {
@@ -370,7 +425,6 @@ input:focus~.bar:before {
 .value .piece {
     width: 7vh;
     height: 7vh;
-
 }
 
 .endgame {
