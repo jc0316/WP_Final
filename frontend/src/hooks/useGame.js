@@ -4,14 +4,12 @@ import { io } from "socket.io-client"
 
 var socket = null;
 let initboard=[
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','b','w','e','e','e'],
-    ['e','e','e','w','b','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e']
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e']
 ]
 
 const instance = axios.create({ 
@@ -30,7 +28,7 @@ const useBoard=()=>{
     const [gameResult, setGameResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
-    const [gameState, setGameState] = useState('notplaying')
+    const [gameState, setGameState] = useState('playing')
 
     const pressSignIn = async (args)=>{
         setStatus('matching')
