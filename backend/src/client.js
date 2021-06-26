@@ -1,4 +1,4 @@
-
+import Name from "./models/name"
 //const Match = require('./models/match')
 //const matching = require('./matching')
 //const board = require('./board')

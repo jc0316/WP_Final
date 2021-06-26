@@ -22,7 +22,7 @@ const cookiegen = ()=>{
 }
 
 const newcookie=(email)=>{
-    existcookie = emailtocookie.get(email)
+    const existcookie = emailtocookie.get(email)
     if(existcookie) return existcookie
     let cookie = cookiegen()
     emailtocookie.set(email,cookie)
