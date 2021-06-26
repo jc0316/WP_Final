@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <input id="email" placeholder="email" />
+    <input id="password" placeholder="password" />
+    <button onclick="submit()">login</button>
+    <script>
+      const emailDOM = document.getElementById('email');
+      const passwordDOM = document.getElementById('password');
+
+      const server = new WebSocket('ws://localhost:4000');
+      server.onopen = () => console.log('Server connected.');
+      server.onmessage = (m) => {
+        onEvent(JSON.parse(m.data));
+      };
+      server.sendEvent = (e) => server.send(JSON.stringify(e));
+      
+      const submit = ()=>{
+        if (!emailDOM.value || !passwordDOM.value) {
+          throw new Error('Fill in the inputs');
+        }
+        const email=emailDOM.value;
+        const password=passwordDOM.value
+        console.log(email, password)
+      }
+      // const startChat = () => {
+      //   if (!nameDOM.value || !toDOM.value) {
+      //     throw new Error('Fill in the inputs');
+      //   }
+
+      //   server.sendEvent({
+      //     type: 'CHAT',
+      //     data: { to: toDOM.value, name: nameDOM.value },
+      //   });
+      // };
+
+      // const sendMessage = () => {
+      //   if (!inputDOM.value || !nameDOM.value || !toDOM.value) {
+      //     throw new Error('Empty input!');
+      //   }
+
+      //   server.sendEvent({
+      //     type: 'MESSAGE',
+      //     data: { to: toDOM.value, name: nameDOM.value, body: inputDOM.value },
+      //   });
+      // };
+
+      // const renderMessages = () => {
+      //   resetMessages();
+
+      //   messages.forEach(({ body, name }) => {
+      //     const newEle = document.createElement('li');
+      //     newEle.innerHTML = `${name}: ${body}`;
+      //     messagesDOM.appendChild(newEle);
+      //   });
+      // };
+
+      // const resetMessages = () => {
+      //   // remove all children
+      //   messagesDOM.innerHTML = '';
+      // };
+
+      // const onEvent = (e) => {
+      //   const { type } = e;
+
+      //   switch (type) {
+      //     case 'CHAT': {
+      //       messages = e.data.messages;
+      //       break;
+      //     }
+      //     case 'MESSAGE': {
+      //       messages.push(e.data.message);
+      //       break;
+      //     }
+      //   }
+
+      //   renderMessages();
+      // };
+    </script>
+  </body>
+</html>
