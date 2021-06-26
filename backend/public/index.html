@@ -8,27 +8,49 @@
   </head>
   <body>
     <ul id="messages"></ul>
+    <input id="name" placeholder="name" />
     <input id="email" placeholder="email" />
-    <input id="password" placeholder="password" />
-    <button onclick="submit()">login</button>
+    <input id="password" placeholder="password" type="password" />
+    <button onclick="sign_in()">sign in</button>
+    <button onclick="sign_up()">sign up</button>
+    <div id='error' style="color: red;"></div>
     <script>
+      const nameDOM = document.getElementById('name');
       const emailDOM = document.getElementById('email');
       const passwordDOM = document.getElementById('password');
 
       const server = new WebSocket('ws://localhost:4000');
       server.onopen = () => console.log('Server connected.');
       server.onmessage = (m) => {
-        onEvent(JSON.parse(m.data));
+        m = m.data
+        onEvent(JSON.parse(m));
       };
       server.sendEvent = (e) => server.send(JSON.stringify(e));
       
-      const submit = ()=>{
-        if (!emailDOM.value || !passwordDOM.value) {
+      const sign_up = ()=>{
+        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
           throw new Error('Fill in the inputs');
         }
-        const email=emailDOM.value;
-        const password=passwordDOM.value
-        console.log(email, password)
+        const name = nameDOM.value;
+        const email = emailDOM.value;
+        const password = passwordDOM.value;
+        server.sendEvent([
+            'SIGN_UP',
+            { name, email, password}
+        ])
+      }
+
+      const sign_in = ()=>{
+        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
+          throw new Error('Fill in the inputs');
+        }
+        const email = emailDOM.value;
+        const password = passwordDOM.value;
+        server.sendEvent([
+            'SIGN_IN',
+            { email, password}
+        ])
+        
       }
       // const startChat = () => {
       //   if (!nameDOM.value || !toDOM.value) {
@@ -62,27 +84,29 @@
       //   });
       // };
 
-      // const resetMessages = () => {
-      //   // remove all children
-      //   messagesDOM.innerHTML = '';
-      // };
+      const resetInputs = () => {
+        // remove all children
+        nameDOM.innerHTML = '';
+        emailDOM.innerHTML = '';
+        passwordDOM.innerHTML = '';
+      };
 
-      // const onEvent = (e) => {
-      //   const { type } = e;
+      const onEvent = (e) => {
+        const [ type, data ]= e;
 
-      //   switch (type) {
-      //     case 'CHAT': {
-      //       messages = e.data.messages;
-      //       break;
-      //     }
-      //     case 'MESSAGE': {
-      //       messages.push(e.data.message);
-      //       break;
-      //     }
-      //   }
+        switch (type) {
+          case 'ERROR': {
+            const errorDOM = document.getElementById('error');
+            errorDOM.innerHTML = data
+            break;
+          }
+          case 'SIGN_UP': {
+            break;
+          }
+        }
 
-      //   renderMessages();
-      // };
+        resetInputs();
+      };
     </script>
   </body>
 </html>
