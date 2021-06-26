@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <input id="name" placeholder="name" />
+    <input id="email" placeholder="email" />
+    <input id="password" placeholder="password" type="password" />
+    <button onclick="sign_in()">sign in</button>
+    <button onclick="sign_up()">sign up</button>
+    <div id='error' style="color: red;"></div>
+    <script>
+      const nameDOM = document.getElementById('name');
+      const emailDOM = document.getElementById('email');
+      const passwordDOM = document.getElementById('password');
+
+      const server = new WebSocket('ws://localhost:4000');
+      server.onopen = () => console.log('Server connected.');
+      server.onmessage = (m) => {
+        m = m.data
+        onEvent(JSON.parse(m));
+      };
+      server.sendEvent = (e) => server.send(JSON.stringify(e));
+      
+      const sign_up = ()=>{
+        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
+          throw new Error('Fill in the inputs');
+        }
+        const name = nameDOM.value;
+        const email = emailDOM.value;
+        const password = passwordDOM.value;
+        server.sendEvent([
+            'SIGN_UP',
+            { name, email, password}
+        ])
+      }
+
+      const sign_in = ()=>{
+        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
+          throw new Error('Fill in the inputs');
+        }
+        const email = emailDOM.value;
+        const password = passwordDOM.value;
+        server.sendEvent([
+            'SIGN_IN',
+            { email, password}
+        ])
+        
+      }
+      // const startChat = () => {
+      //   if (!nameDOM.value || !toDOM.value) {
+      //     throw new Error('Fill in the inputs');
+      //   }
+
+      //   server.sendEvent({
+      //     type: 'CHAT',
+      //     data: { to: toDOM.value, name: nameDOM.value },
+      //   });
+      // };
+
+      // const sendMessage = () => {
+      //   if (!inputDOM.value || !nameDOM.value || !toDOM.value) {
+      //     throw new Error('Empty input!');
+      //   }
+
+      //   server.sendEvent({
+      //     type: 'MESSAGE',
+      //     data: { to: toDOM.value, name: nameDOM.value, body: inputDOM.value },
+      //   });
+      // };
+
+      // const renderMessages = () => {
+      //   resetMessages();
+
+      //   messages.forEach(({ body, name }) => {
+      //     const newEle = document.createElement('li');
+      //     newEle.innerHTML = `${name}: ${body}`;
+      //     messagesDOM.appendChild(newEle);
+      //   });
+      // };
+
+      const resetInputs = () => {
+        // remove all children
+        nameDOM.innerHTML = '';
+        emailDOM.innerHTML = '';
+        passwordDOM.innerHTML = '';
+      };
+
+      const onEvent = (e) => {
+        const [ type, data ]= e;
+
+        switch (type) {
+          case 'ERROR': {
+            const errorDOM = document.getElementById('error');
+            errorDOM.innerHTML = data
+            break;
+          }
+          case 'SIGN_UP': {
+            break;
+          }
+        }
+
+        resetInputs();
+      };
+    </script>
+  </body>
+</html>

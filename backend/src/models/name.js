@@ -12,6 +12,6 @@ const NameSchema = Schema({
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 })
 
-const exportSchema = mongoose.model('Name', NameSchema)
+const Name = mongoose.model('Name', NameSchema)
 
-module.exports = exportSchema
+export default Name
