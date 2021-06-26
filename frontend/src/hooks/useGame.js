@@ -30,7 +30,7 @@ const useBoard=()=>{
     const [gameResult, setGameResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
-    const [gameState, setGameState] = useState('playing')
+    const [gameState, setGameState] = useState('notplaying')
 
     const pressSignIn = async (args)=>{
         setStatus('matching')

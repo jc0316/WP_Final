@@ -16,7 +16,7 @@ function User(props){
 
     const namestyle={
         fontSize: "30px",
-        color: props.connected? "black": "red"
+        color: props.connected? "white": "red"
     }
 
     //Todo : Add player stats

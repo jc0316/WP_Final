@@ -15,12 +15,14 @@ function MainGame(props){
 
     const [pieces, setPieces] =useState([2, 2])
 
+    console.log("gr", gameResult)
+
     return( 
         <div className="game">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <div className="left">
                 <div className="quit">
-                    <QuitButtons pressResign={pressResign}></QuitButtons>
+                    {gameState==="playing" ? <QuitButtons pressResign={pressResign}></QuitButtons> : <p></p>}
                 </div>
                 <User 
                     color={player[1]}
