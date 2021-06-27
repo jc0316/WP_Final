@@ -93,9 +93,17 @@ wss.on('connection', function connection(client){
           const user = await Name.findOne({email})
           if(!user){
             await Name.create({name, email, password, history:{ win: 0, lost: 0, tie: 0 }})
+            client.sendEvent([
+              'SIGN_UP',
+              'User created'
+            ])
             console.log("user created")
           }
           else{
+            client.sendEvent([
+              'ERROR',
+              'User already exists!!'
+            ])
             console.log("user already exist")
           }
         }
@@ -118,6 +126,10 @@ wss.on('connection', function connection(client){
             client.username = user.name
             client.email = user.email
             clients.push(client)
+            client.sendEvent([
+              'SIGN_IN',
+              'Login success!!'
+            ])
             start_match(client, clients)
             
           }
@@ -177,6 +189,7 @@ wss.on('connection', function connection(client){
           })
           await Game.updateOne({}, game)
         }
+        break
       }
     }
   })
