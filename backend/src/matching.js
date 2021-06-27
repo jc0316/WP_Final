@@ -1,14 +1,14 @@
 import Game from "./models/game"
 
 const new_board= [
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'b', 'w', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'w', 'b', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-    ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e']
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e'],
+    ['e', 'e', 'e', 'e', 'e', 'e']
 ]
 
 const matching = async (client1, client2)=>{
@@ -32,9 +32,7 @@ const matching = async (client1, client2)=>{
         board: new_board,
     }
     console.log(`${client1.username} and ${client2.username} in game now`)
-    await Game.create(new_game, (err)=>{
-        console.log(err)
-    })
+    await Game.create(new_game)
     client1.sendEvent([
         'START',
         new_game
@@ -43,6 +41,8 @@ const matching = async (client1, client2)=>{
         'START',
         new_game
     ])
+    const this_game = Game.find({})[0]
+    return this_game
 }
 
 export default matching

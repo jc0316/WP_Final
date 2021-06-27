@@ -1,7 +1,8 @@
 require('dotenv').config()
-import Name from "./models/name"
+import Name from "./models/name";
+import Game from "./models/game";
 import matching from "./matching";
-const client = require('./client')
+import board from "./board"
 
 const express = require('express');
 const mongoose = require('mongoose')
@@ -45,9 +46,10 @@ const check=(name,password)=>{
       return 'password tshould <= 12'
   }
   
-   return undefined
+   return null
 }
-const start_match = (client, clients)=>{
+const start_match = async (client, clients)=>{
+  await Game.deleteMany({}, (err)=>console.log(err))
   client.sendEvent([
     'WAITING',
     {client, clients}
@@ -66,9 +68,9 @@ const wss = new WebSocket.Server({
 var clients=[]
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+
 wss.on('connection', function connection(client){
   console.log('wss connected')
-  clients.push(client)
   client.sendEvent = (e) => client.send(JSON.stringify(e));
 
   client.on('message', async function incoming(m){
@@ -76,6 +78,7 @@ wss.on('connection', function connection(client){
     const [type, data] = m
     console.log(type)
     console.log(data)
+
     switch (type){
       case 'SIGN_UP': {
         const { name, email, password } = data
@@ -89,7 +92,7 @@ wss.on('connection', function connection(client){
         else{
           const user = await Name.findOne({email})
           if(!user){
-            await Name.create({name, email, password})
+            await Name.create({name, email, password, history:{ win: 0, lost: 0, tie: 0 }})
             console.log("user created")
           }
           else{
@@ -98,10 +101,10 @@ wss.on('connection', function connection(client){
         }
         break
       }
+
       case "SIGN_IN": {
         const { email, password } = data
-        const user = await Name.findOne({email})
-        console.log(user)
+        const user = await Name.findOne({email, password})
         if(!user){
           client.sendEvent([
             'ERROR',
@@ -114,6 +117,7 @@ wss.on('connection', function connection(client){
             client.status = 'lobby'
             client.username = user.name
             client.email = user.email
+            clients.push(client)
             start_match(client, clients)
             
           }
@@ -123,6 +127,55 @@ wss.on('connection', function connection(client){
               'Wrong password!!'
             ])
           }
+        }
+        break
+      }
+
+      case "PLACE": {
+        const { col, row } = data
+        let game = await Game.findOne({})
+        const something = board.place(col, row, game, client)
+        console.log(something)
+        // if (game === new_game)
+        if (something === 'Not your turn!'){
+          client.sendEvent([
+            'ERROR',
+            something
+          ])
+        }
+        else if (something === 'This line is full!'){
+          client.sendEvent([
+            'ERROR',
+            something
+          ])
+        }
+        else if (something[0] === 'end'){
+          const [ mes, game, winner ] = something
+          if(winner === 'w') {
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
+          }
+          else if(winner === 'b') {
+              await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
+              await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
+          }
+          else {
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
+          }
+          client.sendEvent([
+            'END',
+            [game, winner]
+          ])
+        }
+        else {
+          clients.forEach((client)=>{
+            client.sendEvent([
+              'PLACE',
+              something
+            ])
+          })
+          await Game.updateOne({}, game)
         }
       }
     }

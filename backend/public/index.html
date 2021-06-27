@@ -14,77 +14,130 @@
     <button onclick="sign_in()">sign in</button>
     <button onclick="sign_up()">sign up</button>
     <div id='error' style="color: red;"></div>
+    <div id='board'></div>
     <script>
-      const nameDOM = document.getElementById('name');
-      const emailDOM = document.getElementById('email');
-      const passwordDOM = document.getElementById('password');
+        const nameDOM = document.getElementById('name');
+        const emailDOM = document.getElementById('email');
+        const passwordDOM = document.getElementById('password');
 
-      const server = new WebSocket('ws://localhost:4000');
-      server.onopen = () => console.log('Server connected.');
-      server.onmessage = (m) => {
-        m = m.data
-        onEvent(JSON.parse(m));
-      };
-      server.sendEvent = (e) => server.send(JSON.stringify(e));
-      
-      const sign_up = ()=>{
-        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
-          throw new Error('Fill in the inputs');
-        }
-        const name = nameDOM.value;
-        const email = emailDOM.value;
-        const password = passwordDOM.value;
-        server.sendEvent([
-            'SIGN_UP',
-            { name, email, password}
-        ])
-      }
-
-      const sign_in = ()=>{
-        if (!emailDOM.value || !passwordDOM.value) {
-          throw new Error('Fill in the inputs');
-        }
-        const email = emailDOM.value;
-        const password = passwordDOM.value;
-        server.sendEvent([
-            'SIGN_IN',
-            { email, password}
-        ]) 
-      }
-
-      const resetInputs = () => {
-        // remove all children
-        nameDOM.innerHTML = '';
-        emailDOM.innerHTML = '';
-        passwordDOM.innerHTML = '';
-      };
-
-      const onEvent = (e) => {
-        const [ type, data ]= e;
-        const errorDOM = document.getElementById('error');
-
-        switch (type) {
-          case 'ERROR': {
-            errorDOM.innerHTML = data
-            break;
-          }
-          case 'SIGN_UP': {
-            break;
-          }
-          case 'WAITING': {
-            const { client, clients } = data
-            console.log(client)
-            console.log(clients)
-            break
-          }
-          case 'START': {
-            const new_game = data
-            console.log(new_game)
-            errorDOM.innerHTML = new_game
-          }
+        const server = new WebSocket('ws://localhost:4000');
+        server.onopen = () => console.log('Server connected.');
+        server.onmessage = (m) => {
+            m = m.data
+            onEvent(JSON.parse(m));
+        };
+        server.sendEvent = (e) => server.send(JSON.stringify(e));
+        
+        const sign_up = ()=>{
+            if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
+            throw new Error('Fill in the inputs');
+            }
+            const name = nameDOM.value;
+            const email = emailDOM.value;
+            const password = passwordDOM.value;
+            server.sendEvent([
+                'SIGN_UP',
+                { name, email, password}
+            ])
         }
 
-        resetInputs();
+        const sign_in = ()=>{
+            if (!emailDOM.value || !passwordDOM.value) {
+            throw new Error('Fill in the inputs');
+            }
+            const email = emailDOM.value;
+            const password = passwordDOM.value;
+            server.sendEvent([
+                'SIGN_IN',
+                { email, password}
+            ]) 
+        }
+
+        const resetInputs = () => {
+            // remove all children
+            nameDOM.innerHTML = '';
+            emailDOM.innerHTML = '';
+            passwordDOM.innerHTML = '';
+        };
+
+        const place = (id)=>{
+            const [col, row] = id.split("_")
+            server.sendEvent([
+                'PLACE',
+                {col, row}
+            ])
+        }
+
+        const onEvent = (e) => {
+            const [ type, data ]= e;
+            const errorDOM = document.getElementById('error');
+            const boardDOM = document.getElementById('board')
+            errorDOM.innerHTML = ''
+            switch (type) {
+                case 'ERROR': {
+                    errorDOM.innerHTML = data
+                    break;
+                }
+                case 'SIGN_UP': {
+                    break;
+                }
+                case 'WAITING': {
+                    const { client, clients } = data
+                    console.log(client)
+                    console.log(clients)
+                    break
+                }
+                case 'START': {
+                    const new_game = data
+                    console.log(new_game)
+                    boardDOM.innerHTML = ''
+                    new_game.board.forEach((array, col)=>{
+                        let div = document.createElement("div")
+                        boardDOM.appendChild(div)
+                        array.forEach((element, row)=>{
+                            let button = document.createElement("button")
+                            button.innerHTML = element
+                            button.id = String(col)+"_"+String(row)
+                            button.onclick = function() {place(button.id)}
+                            div.appendChild(button)
+                        })
+                    })
+                }
+                case 'PLACE': {
+                    const new_game = data
+                    console.log(new_game)
+                    boardDOM.innerHTML = ''
+                    new_game.board.forEach((array, col)=>{
+                        let div = document.createElement("div")
+                        boardDOM.appendChild(div)
+                        array.forEach((element, row)=>{
+                            let button = document.createElement("button")
+                            button.innerHTML = element
+                            button.id = String(col)+"_"+String(row)
+                            button.onclick = function() {place(button.id)}
+                            div.appendChild(button)
+                        })
+                    })
+                }
+                case 'END': {
+                    const [end_game, winner] = data
+                    console.log(end_game)
+                    boardDOM.innerHTML = ''
+                    end_game.board.forEach((array, col)=>{
+                        let div = document.createElement("div")
+                        boardDOM.appendChild(div)
+                        array.forEach((element, row)=>{
+                            let button = document.createElement("button")
+                            button.innerHTML = element
+                            button.id = String(col)+"_"+String(row)
+                            button.onclick = function() {place(button.id)}
+                            div.appendChild(button)
+                        })
+                    })
+                    errorDOM.innerHTML = `${winner} side wins!`
+                }
+            }
+            resetInputs();
       };
     </script>
   </body>
