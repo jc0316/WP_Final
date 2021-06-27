@@ -35,23 +35,18 @@ const check=(name,password)=>{
   if(!/^[a-z0-9A-Z]*$/i.test(name)){
       return "name should only contain English and number!"
   }
-  if(name.length>15){
-      return 'name too long (should <=15)'
-  }
-
   if(!password){
        return 'password invalid'
   }
   if(password.length<6){
-      return 'password too short (should >=6)'
+      return 'password should >= 6'
   }
-  if(password.length>15){
-      return 'password too long (should <=15)'
+  if(password.length>12){
+      return 'password tshould <= 12'
   }
   
    return undefined
 }
-
 /* -------------------------------------------------------------------------- */
 /*                            SERVER INITIALIZATION                           */
 /* -------------------------------------------------------------------------- */
@@ -59,9 +54,11 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({
   server,
 });
+var clients=[]
 app.use(express.static(path.join(__dirname, '..', 'public')));
 wss.on('connection', function connection(client){
   console.log('wss connected')
+  clients.push(client)
   client.sendEvent = (e) => client.send(JSON.stringify(e));
 
   client.on('message', async function incoming(m){
@@ -104,6 +101,10 @@ wss.on('connection', function connection(client){
         else{
           if(password === user.password){
             console.log("login success!")
+            client.status = 'lobby'
+            client.username = user.name
+            client.email = user.email
+            console.log(clients)
           }
           else{
             client.sendEvent([
