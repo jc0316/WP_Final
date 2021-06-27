@@ -13,7 +13,7 @@ const WebSocket = require('ws');
 var app = express()
 
 const db = mongoose.connection
-mongoose.connect(process.env.MONGO_URL || 'mongodb+srv://chen0716:Alex880716@cluster0.ky9vd.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify:false
