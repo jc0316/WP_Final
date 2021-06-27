@@ -3,6 +3,8 @@ import './../style.css'
 import Black from "../images/black.svg";
 import White from "../images/white.svg";
 import face from "../images/face.svg";
+import yellowpiece from "../images/yellow-piece.png";
+import redpiece from "../images/red-piece.png";
 
 function User(props){
     const userstyle={
@@ -16,7 +18,7 @@ function User(props){
 
     const namestyle={
         fontSize: "30px",
-        color: props.connected? "black": "red"
+        color: props.connected? "white": "red"
     }
 
     //Todo : Add player stats
@@ -52,14 +54,11 @@ function User(props){
                 
                 <div className="card-details">
                     <div className="card-details piece">
-                        {props.color==='b'? (<img className="card-details piece" src={Black}/>):(<img className="card-details piece" src={White}/>)}
+                        {props.color==='b'? (<img className="card-details piece" src={yellowpiece}/>):(<img className="card-details piece" src={redpiece}/>)}
                     </div>
                     <div className="card-details data">
                         <div className="item">
                             <span className="value">{computeTimeleft()}</span>
-                        </div>
-                        <div className="item">
-                            <span className="value" style={{fontSize:18}}>{props.pieces} Pieces</span>
                         </div>
                     </div>
                 </div>

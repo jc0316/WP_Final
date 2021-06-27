@@ -2,29 +2,22 @@ import {useState} from 'react'
 import "./../style.css"
 
 function Result(props){
-    const {gameresult,player}=props
+    const {player, gameResult, pressLogout, pressrestart} = props
     return (
-        <div className="endgame">
+        <div className="endgame-layout">
             <div className="grid">
                 <div className="heading heading--stroke-shadow">
-                    {gameresult[0]==='e'?"Dual OuO":(gameresult[0]===player[1]?"You winnnnn :>":"You lose... QQ")}
+                    {gameResult[0]==='e'?"DRAW":(gameResult[0]===player[1]?"VICTORY":"DEFEAT")}
                 </div>
             </div>
-            <div class="btn" onClick={props.pressrestart}>
-              <span>New game</span>
-              <svg width="13px" height="10px" viewBox="0 0 13 10">
-                <path d="M1,5 L11,5"></path>
-                <polyline points="8 1 12 5 8 9"></polyline>
-              </svg>
+            <div className="endgame-buttons">
+              <button className="endgame-newgame" data-text="NEW GAME" onClick={props.pressrestart}>
+                New game
+              </button>
+              <button className="endgame-logout" data-text="VERSUS" onClick={props.pressLogout}>
+                Logout
+              </button>
             </div>
-            <div class="btn" onClick={props.pressLogout}>
-              <span>Log out</span>
-              <svg width="13px" height="10px" viewBox="0 0 13 10">
-                <path d="M1,5 L11,5"></path>
-                <polyline points="8 1 12 5 8 9"></polyline>
-              </svg>
-            </div>
-            
         </div>
     )
 }

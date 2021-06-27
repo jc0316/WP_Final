@@ -13,6 +13,7 @@
 .vs-text {
   position: relative;
   font-size: 6em;
+  font-family: "Poppins";
   letter-spacing: 15px;
   color: #0e3742;
   text-transform: uppercase;

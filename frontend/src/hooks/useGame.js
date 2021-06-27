@@ -4,14 +4,12 @@ import { io } from "socket.io-client"
 
 var socket = null;
 let initboard=[
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','b','w','e','e','e'],
-    ['e','e','e','w','b','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e']
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e']
 ]
 
 const instance = axios.create({ 

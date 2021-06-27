@@ -143,8 +143,8 @@ button {
 .board {
     margin: 50px;
     border: 5px solid black;
-    box-shadow: 15px 30px 50px rgba(255, 255, 255, 0.438),
-        15px 12px 50px rgba(30, 255, 0, 0.5);
+    box-shadow: 0px 0px 100px rgba(255, 255, 255, 0.438),
+        0px 0px 70px rgb(0, 153, 255);
 }
 
 .piece {
@@ -162,16 +162,10 @@ button {
 }
 
 .Grid1x1 {
-    border: 3px solid rgb(0, 0, 0);
-    box-shadow: 0 0 2px #000000de,
-        0 0 4px #3f3f3fde,
-        0 0 8px #808080de,
-        0 0 16px #424242de,
-        0 0 32px #000000de;
-
-    width: 10.5vh;
-    height: 10.5vh;
-    background: #58a33aea;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -397,6 +391,8 @@ input:focus~.bar:before {
     height: 7vh;
     margin-right: 1em;
     align-items: center;
+    background: transparent;
+    background-color: transparent;
 }
 
 .card-details .data {
@@ -427,11 +423,58 @@ input:focus~.bar:before {
     height: 7vh;
 }
 
-.endgame {
-    margin-top: 50%;
+.endgame-layout {
     text-align: center;
-    font-family: "Comic Sans MS";
-    font-size: 30px;
+    font-family: "Poppins";
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.endgame-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.endgame-newgame {
+    font-size: 6em;
+    font-family: "Poppins";
+    letter-spacing: 15px;
+    color: #0e3742;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    border: none;
+    line-height: 0.7em;
+    outline: none;
+    background-color: transparent;
+
+}
+
+.endgame-newgame:hover {
+    box-shadow: 0 0 10px #00ff0dde;
+    animation: glow-animate-green 5s linear infinite;
+}
+
+.endgame-logout {
+    font-size: 6em;
+    font-family: "Poppins";
+    letter-spacing: 15px;
+    color: #0e3742;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    border: none;
+    line-height: 0.7em;
+    outline: none;
+    background-color: transparent;
+    text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.199), 0px 0px 16px rgb(0, 0, 0);
+}
+
+.endgame-logout:hover {
+    box-shadow: 0 0 10px #f40303de;
+    animation: glow-animate-red 5s linear infinite;
 }
 
 .grid {
@@ -450,7 +493,127 @@ input:focus~.bar:before {
     text-shadow: -2px 0 #0d1b1e, 0 -2px #0d1b1e, 2px 0 #0d1b1e, 0 2px #0d1b1e, 2px 2px #0d1b1e, -2px -2px #0d1b1e, -2px 2px #0d1b1e, 2px -2px #0d1b1e, 6px 6px grey;
 }
 
-.easteregg {
-    font-size: 28px;
-    font-weight: bold;
+@keyframes glow-animate-blue {
+
+    0%,
+    18%,
+    20%,
+    50.1%,
+    60%,
+    65.1%,
+    80%,
+    90.1%,
+    92% {
+        color: #fff;
+        text-shadow: 0 0 10px #03bcf4de,
+            0 0 20px #03bcf4de,
+            0 0 40px #03bcf4de,
+            0 0 80px #03bcf4de,
+            0 0 160px #03bcf4de;
+
+    }
+
+    18.1%,
+    20.1%,
+    30%,
+    50%,
+    60.1%,
+    65%,
+    80.1%,
+    90%,
+    92.1%,
+    100% {
+        color: #fff;
+        text-shadow: 0 0 10px #03bcf4,
+            0 0 20px #03bcf4,
+            0 0 40px #03bcf4,
+            0 0 80px #03bcf4,
+            0 0 160px #03bcf4;
+    }
+}
+
+@keyframes glow-animate-red {
+
+    0%,
+    18%,
+    20%,
+    50.1%,
+    60%,
+    65.1%,
+    80%,
+    90.1%,
+    92% {
+        color: #fff;
+        text-shadow: 0 0 10px #ff6600de,
+            0 0 20px #ff6600de,
+            0 0 40px #ff6600de,
+            0 0 80px #ff6600de,
+            0 0 160px #ff6600de,
+            0 0 320px #ff6600de,
+            0 0 640px #ff6600de;
+
+    }
+
+    18.1%,
+    20.1%,
+    30%,
+    50%,
+    60.1%,
+    65%,
+    80.1%,
+    90%,
+    92.1%,
+    100% {
+        color: #fff;
+        text-shadow: 0 0 10px #f43303,
+            0 0 20px #f43303,
+            0 0 40px #f43303,
+            0 0 80px #f43303,
+            0 0 160px #f43303,
+            0 0 320px #f43303,
+            0 0 640px #f43303;
+    }
+}
+
+@keyframes glow-animate-green {
+
+    0%,
+    18%,
+    20%,
+    50.1%,
+    60%,
+    65.1%,
+    80%,
+    90.1%,
+    92% {
+        color: #fff;
+        text-shadow: 0 0 10px #8dff30de,
+            0 0 20px #8dff30de,
+            0 0 40px #8dff30de,
+            0 0 80px #8dff30de,
+            0 0 160px #8dff30de,
+            0 0 320px #8dff30de,
+            0 0 640px #8dff30de;
+
+    }
+
+    18.1%,
+    20.1%,
+    30%,
+    50%,
+    60.1%,
+    65%,
+    80.1%,
+    90%,
+    92.1%,
+    100% {
+        color: #fff;
+        text-shadow: 0 0 10px #52ff30de,
+            0 0 20px #52ff30de,
+            0 0 40px #52ff30de,
+            0 0 80px #52ff30de,
+            0 0 160px #52ff30de,
+            0 0 320px #52ff30de,
+            0 0 640px #52ff30de;
+    }
 }
