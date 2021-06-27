@@ -41,7 +41,7 @@
       }
 
       const sign_in = ()=>{
-        if (!emailDOM.value || !passwordDOM.value || !nameDOM.value) {
+        if (!emailDOM.value || !passwordDOM.value) {
           throw new Error('Fill in the inputs');
         }
         const email = emailDOM.value;
@@ -49,40 +49,8 @@
         server.sendEvent([
             'SIGN_IN',
             { email, password}
-        ])
-        
+        ]) 
       }
-      // const startChat = () => {
-      //   if (!nameDOM.value || !toDOM.value) {
-      //     throw new Error('Fill in the inputs');
-      //   }
-
-      //   server.sendEvent({
-      //     type: 'CHAT',
-      //     data: { to: toDOM.value, name: nameDOM.value },
-      //   });
-      // };
-
-      // const sendMessage = () => {
-      //   if (!inputDOM.value || !nameDOM.value || !toDOM.value) {
-      //     throw new Error('Empty input!');
-      //   }
-
-      //   server.sendEvent({
-      //     type: 'MESSAGE',
-      //     data: { to: toDOM.value, name: nameDOM.value, body: inputDOM.value },
-      //   });
-      // };
-
-      // const renderMessages = () => {
-      //   resetMessages();
-
-      //   messages.forEach(({ body, name }) => {
-      //     const newEle = document.createElement('li');
-      //     newEle.innerHTML = `${name}: ${body}`;
-      //     messagesDOM.appendChild(newEle);
-      //   });
-      // };
 
       const resetInputs = () => {
         // remove all children
@@ -93,15 +61,26 @@
 
       const onEvent = (e) => {
         const [ type, data ]= e;
+        const errorDOM = document.getElementById('error');
 
         switch (type) {
           case 'ERROR': {
-            const errorDOM = document.getElementById('error');
             errorDOM.innerHTML = data
             break;
           }
           case 'SIGN_UP': {
             break;
+          }
+          case 'WAITING': {
+            const { client, clients } = data
+            console.log(client)
+            console.log(clients)
+            break
+          }
+          case 'START': {
+            const new_game = data
+            console.log(new_game)
+            errorDOM.innerHTML = new_game
           }
         }
 

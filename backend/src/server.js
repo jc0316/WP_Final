@@ -1,6 +1,6 @@
 require('dotenv').config()
 import Name from "./models/name"
-
+import matching from "./matching";
 const client = require('./client')
 
 const express = require('express');
@@ -47,6 +47,15 @@ const check=(name,password)=>{
   
    return undefined
 }
+const start_match = (client, clients)=>{
+  client.sendEvent([
+    'WAITING',
+    {client, clients}
+  ])
+  if(clients.length == 2){
+    matching(clients[0], clients[1])
+  }
+}
 /* -------------------------------------------------------------------------- */
 /*                            SERVER INITIALIZATION                           */
 /* -------------------------------------------------------------------------- */
@@ -56,6 +65,7 @@ const wss = new WebSocket.Server({
 });
 var clients=[]
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
 wss.on('connection', function connection(client){
   console.log('wss connected')
   clients.push(client)
@@ -104,7 +114,8 @@ wss.on('connection', function connection(client){
             client.status = 'lobby'
             client.username = user.name
             client.email = user.email
-            console.log(clients)
+            start_match(client, clients)
+            
           }
           else{
             client.sendEvent([

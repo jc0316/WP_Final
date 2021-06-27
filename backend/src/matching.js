@@ -25,7 +25,7 @@ const matching = async (client1, client2)=>{
             },
             black:{
                 name: client2.username,
-                email: client1.email,
+                email: client2.email,
                 time: 2*60*60
             },
         },
@@ -35,6 +35,14 @@ const matching = async (client1, client2)=>{
     await Game.create(new_game, (err)=>{
         console.log(err)
     })
+    client1.sendEvent([
+        'START',
+        new_game
+    ])
+    client2.sendEvent([
+        'START',
+        new_game
+    ])
 }
 
 export default matching
