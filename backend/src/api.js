@@ -55,7 +55,10 @@ exports.login=async (req,res)=>{
     
     let {email,password} = req.body
     let user = await Name.findOne({email:email},(err)=>{
-        if(err)throw err
+        if(err){
+            throw err
+            console.log(err)
+        }
     })
     if(!user){
         res.json({status:400,content:'email not exist'})

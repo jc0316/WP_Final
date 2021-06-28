@@ -1,8 +1,12 @@
 // import { useState } from 'react'
 import './../style.css'
-import Black from "../pic/black.svg";
-import White from "../pic/white.svg";
-import Can from "../pic/can2.svg";
+import Black from "../images/black.svg";
+import White from "../images/white.svg";
+import Can from "../images/can2.svg";
+import frame from "../images/frame.png";
+import red from "../images/red.jpg";
+import yellow from "../images/yellow.jpg";
+import hint from "../images/hint.jpg";
 
 function Grid1x1(props){
     const renderSwitch=(value)=>{
@@ -10,6 +14,7 @@ function Grid1x1(props){
             case 'w': return (<img className="piece" src={White}/>)
             case 'b': return (<img className="piece" src={Black}/>)
             case 'c': return (<img className="hint piece" src={Can} />)
+            case 'e': return (<img className="piece" src={frame} />)
             default: return (<img/>)
 
         }
@@ -24,5 +29,3 @@ function Grid1x1(props){
 }
 
 export default Grid1x1
-
-// props.value==='b'? (<img src={Black} width="77.5" height="77.5"/>): (props.value==='w'? (<img src={White} width="77.5" height="77.5"/>):<img/>)

@@ -102,12 +102,14 @@ export default function SignIn(props) {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={()=>{props.pressSignIn(({password:password,email:email}))}}
+              onClick={()=>{
+                props.pressSignIn(({password:password,email:email}))
+              }}
             >
               Sign In
             </Button>

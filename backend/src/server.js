@@ -1,130 +1,202 @@
 require('dotenv').config()
-
-
-const api = require('./api')
-const client = require('./client')
+import Name from "./models/name";
+import Game from "./models/game";
+import matching from "./matching";
+import board from "./board"
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const cookieParserIO = require('cookie-parser-io');
 const mongoose = require('mongoose')
 const path = require('path');
 var cors = require('cors')
+const http = require('http');
+const WebSocket = require('ws');
 
+var app = express()
 
-const http = require('http')
-
-
-var app=express()
-const server = http.createServer(app)
-const io = require('socket.io')(server,{
-  cors: {
-    origin: "http://localhost:4000",//frontend
-    methods: ["GET", "POST"]
-  }
-})
-
+const db = mongoose.connection
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify:false
   })
-
-  
-const db = mongoose.connection
 db.on('error', (error) => {
   console.error(error)
 })
-
-
-
-db.once('open', async() => {
-    console.log('MongoDB connected!')
-    // await Name.deleteMany({},()=>{/*console.log('clear names')*/})
-    //await Match.deleteMany({},()=>{/*console.log('clear names')*/})//delete all matches before
-    io.use(cookieParserIO('mv5qhue8ik2c6071gxaz'));
-    
-    io.use(async (socket,next)=>{
-      let email = api.cookie2email().get(socket.request.signedCookies.connect_four)
-      if(!email){
-        err="wrong connection!!"
-        console.log(err)
-        next(new Error(err))
-        return 
-      }
-      err =await client.getemail(io,socket,{email:email})  //目前線上登入名單valid?
-      if(err){
-        console.log(err)
-        next(new Error(err))
-      }
-      else{
-        next()
-      }
-    })
-   
-    // io.on("connection",(socket)=>{
-    //   client.init(io,socket)
-    //   socket.on('disconnect',()=>{
-    //     client.disconnectmatch(io,socket)
-    //     client.removename(socket)
-    //   })
-    //   socket.on('place',(payload)=>{
-    //     client.place(io,socket,payload)
-    //   })
-    //   socket.on('resigned',()=>{
-    //     client.resigned(io,socket)
-    //   })
-    //   socket.on('checktime',()=>{
-    //     client.checktime(io,socket)
-    //   })
-    // })
-    
-    // setInterval(()=>{
-    //   // console.log("start")
-    //   matching.matchall(io)
-    //   // console.log("end")
-    // },1000)
+db.once('open', async function () {
+  console.log('Mongo database connected!');
+});
   
-    app.use(cors({
-      origin : "http://localhost:4000",
-    credentials: true,
-    })) 
-    app.use(cookieParser('mv5qhue8ik2c6071gxaz'));
-    app.use(bodyParser.json())
-    app.use(function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-      res.header("Access-Control-Allow-Credentials", true);
-      next();
-    });
-    app.post('/api/register', (req, res) => {
-        api.register(req,res)
-    })
-    app.get('/api/logout', (req, res) => {
-      api.logout(req,res)
-    })
-    app.post('/api/login', (req, res) => {
-      api.login(req,res)
-    })
-    app.get('/api/checklogin', (req, res) => {
-      api.checklogin(req,res)
-    })
-    
-    
-    
-    
-    app.get('/', (req, res) => {
-      // res.sendFile(path.join(__dirname,".." ,'public', 'index.html'));;
-      res.sendFile(path.join(__dirname,".." ,"..",'frontend','build', 'index.html'));;
-      
-    });
-    app.use(express.static(path.join(__dirname,".." ,'build')));
-    
-    const PORT = process.env.port || 4000
-     server.listen(PORT, () => {
-       console.log(`Listening on http://localhost:${PORT}`)
-     })
-     
+/* -------------------------------------------------------------------------- */
+/*                                  UTILITIES                                 */
+/* -------------------------------------------------------------------------- */
+const check=(name,password)=>{
+  if(!name){
+      return 'name invalid'
+  }
+  //if(!/^[a-z0-9A-Z]*$/i.test(name)){
+  //    return "name should only contain English and number!"
+  //}
+  if(!password){
+       return 'password invalid'
+  }
+  if(password.length<6){
+      return 'password should >= 6'
+  }
+  if(password.length>12){
+      return 'password tshould <= 12'
+  }
+  
+   return null
+}
+const start_match = async (client, clients)=>{
+  await Game.deleteMany({}, (err)=>console.log(err))
+  client.sendEvent([
+    'WAITING',
+    {client, clients}
+  ])
+  if(clients.length == 2){
+    matching(clients[0], clients[1])
+  }
+}
+/* -------------------------------------------------------------------------- */
+/*                            SERVER INITIALIZATION                           */
+/* -------------------------------------------------------------------------- */
+const server = http.createServer(app);
+const wss = new WebSocket.Server({
+  server,
+});
+var clients=[]
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+
+wss.on('connection', function connection(client){
+  console.log('wss connected')
+  client.sendEvent = (e) => client.send(JSON.stringify(e));
+
+  client.on('message', async function incoming(m){
+    m = JSON.parse(m);
+    const [type, data] = m
+    console.log(type)
+    console.log(data)
+
+    switch (type){
+      case 'SIGN_UP': {
+        const { fullName, email, password } = data
+        console.log({fullName})
+        let err=check(fullName, password)
+        if(err){
+          client.sendEvent([
+            'ERROR',
+            err
+          ])
+        }
+        else{
+          const user = await Name.findOne({email})
+          if(!user){
+            await Name.create({name:fullName, email, password, history:{ win: 0, lost: 0, tie: 0 }})
+            client.sendEvent([
+              'SIGN_UP',
+              'User created'
+            ])
+            console.log("user created")
+          }
+          else{
+            client.sendEvent([
+              'ERROR',
+              'User already exists!!'
+            ])
+            console.log("user already exist")
+          }
+        }
+        break
+      }
+
+      case "SIGN_IN": {
+        const { email, password } = data
+        const user = await Name.findOne({email, password})
+        if(!user){
+          client.sendEvent([
+            'ERROR',
+            'User does not exist!!'
+          ])
+        }
+        else{
+          if(password === user.password){
+            console.log("login success!")
+            client.status = 'matching'
+            client.username = user.name
+            client.email = user.email
+            client.history = user.history
+            clients.push(client)
+            client.sendEvent([
+              'SIGN_IN',
+              'Login success!!'
+            ])
+            start_match(client, clients)
+            
+          }
+          else{
+            client.sendEvent([
+              'ERROR',
+              'Wrong password!!'
+            ])
+          }
+        }
+        break
+      }
+
+      case "PLACE": {
+        const { col, row } = data
+        let game = await Game.findOne({})
+        const something = board.place(col, row, game, client)
+        console.log(something)
+        // if (game === new_game)
+        if (something === 'Not your turn!'){
+          client.sendEvent([
+            'ERROR',
+            something
+          ])
+        }
+        else if (something === 'This line is full!'){
+          client.sendEvent([
+            'ERROR',
+            something
+          ])
+        }
+        else if (something[0] === 'end'){
+          const [ mes, game, winner ] = something
+          if(winner === 'w') {
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
+          }
+          else if(winner === 'b') {
+              await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
+              await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
+          }
+          else {
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
+          }
+          client.sendEvent([
+            'END',
+            [game, winner]
+          ])
+        }
+        else {
+          clients.forEach((client)=>{
+            client.sendEvent([
+              'PLACE',
+              something
+            ])
+          })
+          await Game.updateOne({}, game)
+        }
+        break
+      }
+    }
   })
-  
+})
+
+server.listen(4000, () => {
+  console.log('Server listening at http://localhost:4000');
+});
