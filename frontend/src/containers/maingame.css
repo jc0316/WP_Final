@@ -9,7 +9,9 @@
   margin-bottom: 10%;
   margin-top: 10%;
 }
-
+.card-stats {
+  font-size: 2em;
+}
 .vs-text {
   position: relative;
   font-size: 6em;

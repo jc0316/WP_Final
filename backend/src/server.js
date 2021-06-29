@@ -183,7 +183,6 @@ wss.on('connection', function connection(client){
               [game, winner]
             ])
           })
-          
         }
         else {
           clients.forEach((client)=>{

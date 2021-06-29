@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GameSchema = Schema({
+    time: { type: Number, required: true},
     turn:{
         type: String,
         enum:["b","w","end"]
@@ -14,14 +15,16 @@ const GameSchema = Schema({
                 type: Object,
                 properties:{
                     name:{type: String},
-                    email:{type: String}
+                    email:{type: String},
+                    time:{type: Number}
                 },
             },
             black:{
                 type: Object,
                 properties:{
                     name:{type: String},
-                    email:{type: String}
+                    email:{type: String},
+                    time:{type: Number}
                 },
             }
         },

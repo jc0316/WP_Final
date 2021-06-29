@@ -4,7 +4,6 @@ import Grid1x1 from './Grid1x1'
 
 function Board(props){
     var grids=new Array(7)
-    console.log(props.board)
     for(var i=0; i<7; i++)
     {
       grids[i]=[]

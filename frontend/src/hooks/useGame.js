@@ -17,6 +17,7 @@ let initboard=[
 
 
 const useBoard=()=>{
+    const [time,setTime]=useState(0)
     const [lefttime,setLefttime]=useState(2*60*1000)
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
@@ -29,16 +30,25 @@ const useBoard=()=>{
     const [gameState, setGameState] = useState('playing')
 
     const server = new WebSocket('ws://localhost:4000')
-    server.onopen = () => console.log('Server connected2.');
     server.onmessage = (m) => {
         console.log(server)
         m = m.data
         onEvent(JSON.parse(m));
     };
+    server.onopen = () => console.log('Server connected2.');
     server.sendEvent = (e) => server.send(JSON.stringify(e));
 
-    console.log(player)
-    const pressSignIn = async (args)=>{
+    
+    useEffect(()=>{
+        console.log(lefttime)
+        console.log(time, Date.now())
+        // const timer=setInterval(()=>{
+        //     setLefttime(lefttime-(Date.now()-time))
+        // },1000)
+        // return ()=>clearInterval(timer)
+    },[time])
+
+    const pressSignIn = (args)=>{
         
         const email = args.email 
         const password = args.password
@@ -141,9 +151,12 @@ const useBoard=()=>{
                     setOpponent([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
                     
                 }
+                // const timer=setInterval(()=>{
+                //     setLefttime(lefttime-(Date.now()-time))
+                // },1000)
+                // return ()=>clearInterval(timer)
+                setTime(Date.now)
                 setTurn('w')
-                setLefttime(100)
-                console.log(new_game.board)
                 setBoard(new_game.board)
 
                 break
@@ -151,8 +164,10 @@ const useBoard=()=>{
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
+                setTurn(new_game.turn)
                 setBoard(new_game.board)
-
+                setTime(Date.now())
+                setLefttime(2*60*1000)
                 break
             }
             case 'END': {

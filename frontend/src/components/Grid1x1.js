@@ -10,7 +10,6 @@ import hint from "../images/hint.jpg";
 
 function Grid1x1(props){
     const renderSwitch=(value)=>{
-        console.log(value)
         switch(value){
             case 'w': return (<img className="piece" src={red}/>)
             case 'b': return (<img className="piece" src={yellow}/>)
