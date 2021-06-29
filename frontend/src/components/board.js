@@ -3,7 +3,7 @@ import './../style.css'
 import Grid1x1 from './Grid1x1'
 
 function Board(props){
-    const grids=new Array(6)
+    var grids=new Array(6)
     for(var i=0; i<6; i++)
     {
       grids[i]=[]

@@ -137,10 +137,12 @@ const useBoard=()=>{
                     setOpponent([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
                     
                 }
-                console.log(player)
                 setTurn('w')
                 setLefttime([new_game.players.white.time,new_game.players.black.time])
+                console.log(new_game.board)
                 setBoard(new_game.board)
+
+                break
                 
                 
                 
@@ -160,6 +162,7 @@ const useBoard=()=>{
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
+                break
                 // boardDOM.innerHTML = ''
                 // new_game.board.forEach((array, col)=>{
                 //     let div = document.createElement("div")
@@ -176,6 +179,7 @@ const useBoard=()=>{
             case 'END': {
                 const {end_game, winner} = data
                 console.log(end_game)
+                break
                 // boardDOM.innerHTML = ''
                 // end_game.board.forEach((array, col)=>{
                 //     let div = document.createElement("div")
