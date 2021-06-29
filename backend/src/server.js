@@ -1,4 +1,6 @@
-require('dotenv').config()
+require('dotenv').config({
+  path: `${__dirname}/.env`
+})
 const Name      = require("./models/name")
 const Game      = require("./models/game")
 const matching  = require("./matching")
@@ -11,9 +13,10 @@ var cors = require('cors')
 const http = require('http');
 const WebSocket = require('ws');
 
+
 var app = express()
 var cors = require('cors')
-
+console.log(process.env)
 const db = mongoose.connection
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
