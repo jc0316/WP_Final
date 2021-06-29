@@ -178,10 +178,13 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
           }
-          client.sendEvent([
-            'END',
-            [game, winner]
-          ])
+          clients.forEach((client)=>{
+            client.sendEvent([
+              'END',
+              [game, winner]
+            ])
+          })
+          
         }
         else {
           clients.forEach((client)=>{

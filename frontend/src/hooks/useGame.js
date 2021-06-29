@@ -185,8 +185,11 @@ const useBoard=()=>{
                 // })
             }
             case 'END': {
-                const {end_game, winner} = data
+                const [end_game, winner] = data
                 console.log(end_game)
+                setBoard(end_game.board)
+                setGameState("end")
+                setGameResult([winner, ''])
                 break
                 // boardDOM.innerHTML = ''
                 // end_game.board.forEach((array, col)=>{

@@ -7,7 +7,7 @@ function Result(props){
         <div className="endgame-layout">
             <div className="grid">
                 <div className="heading heading--stroke-shadow">
-                    {gameResult[0]==='e'?"DRAW":(gameResult[0]===player[1]?"VICTORY":"DEFEAT")}
+                    {gameResult[0]==='tie'?"DRAW":(gameResult[0]===player[1]?"VICTORY":"DEFEAT")}
                 </div>
             </div>
             <div className="endgame-buttons">
