@@ -1,6 +1,4 @@
-require('dotenv').config({
-  path: `${__dirname}/.env`
-})
+require('dotenv').config()
 const Name      = require("./models/name")
 const Game      = require("./models/game")
 const matching  = require("./matching")
