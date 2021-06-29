@@ -20,7 +20,7 @@ function MainGame(props){
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             <div className="left">
                 <div className="quit">
-                    {gameState==="playing" ? <QuitButtons pressResign={pressResign}></QuitButtons> : <p></p>}
+                    {gameState==="playing" ? <QuitButtons pressResign={pressResign} player={player}></QuitButtons> : <p></p>}
                 </div>
                 <User 
                     color={player[1]}

@@ -4,7 +4,7 @@ import Icon from '@material-ui/core/Icon';
 
 const QuitButtons = (props) => {
     const [clicked, setClicked] = useState(false)
-
+    const {player,pressResign} = props
     if(!clicked)
     {
         return(
@@ -50,7 +50,7 @@ const QuitButtons = (props) => {
                     size="large"
                     onClick={() => {
                         setClicked(false)
-                        props.pressResign()
+                        pressResign(player)
                     }}
                 >
                     Confirm

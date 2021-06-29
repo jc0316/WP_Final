@@ -28,15 +28,45 @@ const useBoard=()=>{
     const [msg,setMsg]=useState({content:""})
 
     const [gameState, setGameState] = useState('playing')
-
+    const prejudge = (col, row)=>{
+        if (player[1] !== turn) return null
+        else {
+            if (board[col][0] !== 'e') return null
+            else{
+                /* apply gravity */
+                let last = 0
+                while(board[col][last] === 'e' && last <= 6) last += 1
+                board[col][last-1] = turn
+                console.log("setting board")
+                setBoard(board)
+            }
+        }
+    }
     const server = new WebSocket('ws://localhost:4000')
-    server.onmessage = (m) => {
-        console.log(server)
-        m = m.data
-        onEvent(JSON.parse(m));
-    };
-    server.onopen = () => console.log('Server connected2.');
-    server.sendEvent = (e) => server.send(JSON.stringify(e));
+    useEffect(()=>{
+        server.onmessage = (m) => {
+            console.log(server)
+            m = m.data
+            onEvent(JSON.parse(m));
+        };
+        server.onopen = () => console.log('Server connected2.');
+        server.sendEvent = function(e) {server.send(JSON.stringify(e));}
+
+    })
+    // server.wait = function(callback, interval){
+    //     console.log(server.readyState)
+    //     if (server.readyState === 1) callback()
+    //     else {
+    //         setTimeout(function () {
+    //             server.wait(callback, interval);
+    //         }, interval);
+    //     }
+    // }
+    // server.sendEvent = function(e){
+    //     server.wait(async function (){
+    //         await server.send(JSON.stringify(e))
+    //     })
+    // }
 
     
     useEffect(()=>{
@@ -48,12 +78,12 @@ const useBoard=()=>{
         // return ()=>clearInterval(timer)
     },[time])
 
-    const pressSignIn = (args)=>{
+    const pressSignIn = async(args)=>{
         
         const email = args.email 
         const password = args.password
         //let res = await instance.post('/login',{email:email,password:password})
-        server.sendEvent([
+        await server.sendEvent([
             'SIGN_IN',
             {email, password}
         ])
@@ -83,36 +113,16 @@ const useBoard=()=>{
         
     }
 
-    const pressCancel = ()=>{
+    const pressCancel =async()=>{
         console.log(server)
-        server.sendEvent([
+        await server.sendEvent([
             'CANCEL',
-
+            server.username
         ])
         setStatus('signin')
     }
 
-    
-    const pressstart=(name)=>{
-        if(server) server.close()
-        console.log("start connecting")
-        server.onopen = () => {
-            console.log('WebSocket Client Connected');
-            setStatus('matching')
-          };
-        
-
-        server.on('connect_error',(err)=>{
-            setMsg({content:err.message})
-            //handle name exist or name invalid
-            setStatus('initial')
-        })
-        
-        
-    }
-
-
-    const onEvent = (e) => {
+    const onEvent = async function(e) {
         const [ type, data ] = e;
         console.log(type, data)
         // const errorDOM = document.getElementById('error');
@@ -129,6 +139,9 @@ const useBoard=()=>{
             }
             case 'SIGN_IN':{
                 const [name, email, history] = data
+                server.username = name
+                server.email = email
+                server.history = history
                 setStatus('matching')
             }
             case 'WAITING': {
@@ -137,6 +150,7 @@ const useBoard=()=>{
                 console.log(clients)
                 break
             }
+
             case 'START': {
                 setStatus('ingame')
                 const [new_game,first] = data
@@ -179,15 +193,34 @@ const useBoard=()=>{
                 
                 break
             }
+            case "NEWGAME":{
+                setStatus('matching')
+                setGameState("playing")
+                console.log("server back newgame")
+                
+                const user = data
+                const email = user.email 
+                const password = user.password
+                console.log(email)
+                console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+                console.log(status)
+                setStatus('matching')
+                await server.sendEvent([
+                    'SIGN_IN',
+                    {email, password}
+                ])
+                console.log("send sign in ")
+            }
         }
         //resetInputs();
   };
 
 
 
-    const place=(row, col, username)=>{
+    const place= async(row, col, username)=>{
         console.log(row, col)
-        server.sendEvent([
+        prejudge(col, row)
+        await server.sendEvent([
             'PLACE',
             {col, row, username}
         ])
@@ -196,16 +229,37 @@ const useBoard=()=>{
         place(row_index, col_index, username)
     }
 
-    const pressResign=()=>{
-
+    const pressResign=async(player)=>{
+        setStatus('signin')
+        console.log(player)
+        console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+        await server.sendEvent([
+            'RESIGN',
+            player
+        ])
     }
 
-    const pressLogout=()=>{
+    const pressLogout= async (args)=>{
         
+        const player = args.player
+
+        await server.sendEvent([
+            'LOGOUT',
+            player
+        ])
+        setStatus('signin')
+        setGameState("playing")
     }
 
-    const pressRestart=()=>{
-        
+    const pressRestart=async(args)=>{
+        const player = args.player
+        console.log("send event newgame")
+        await server.sendEvent([
+            'NEWGAME',
+            player
+        ])
+        console.log("finish send event newgame")
+        setStatus('matching')
     }
 
     let gameHooks = [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click]

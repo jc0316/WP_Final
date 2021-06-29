@@ -3,6 +3,7 @@ import "./../style.css"
 
 function Result(props){
     const {player, gameResult, pressLogout, pressrestart} = props
+
     return (
         <div className="endgame-layout">
             <div className="grid">
@@ -11,10 +12,10 @@ function Result(props){
                 </div>
             </div>
             <div className="endgame-buttons">
-              <button className="endgame-newgame" data-text="NEW GAME" onClick={props.pressrestart}>
+              <button className="endgame-newgame" data-text="NEW GAME" onClick={()=>{pressrestart({player:player[0]})}}>
                 New game
               </button>
-              <button className="endgame-logout" data-text="VERSUS" onClick={props.pressLogout}>
+              <button className="endgame-logout" data-text="VERSUS" onClick={()=>{pressLogout({player:player[0]})}}>
                 Logout
               </button>
             </div>
