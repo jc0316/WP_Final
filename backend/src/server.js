@@ -1,19 +1,17 @@
 require('dotenv').config()
-const Name      = require("./models/name")
-const Game      = require("./models/game")
-const matching  = require("./matching")
-const board     = require("./board")
-
+const Name     = require('./models/name')
+const Game     = require("./models/game")
+const matching = require("./matching")
+const board    = require("./board")
 const express = require('express');
 const mongoose = require('mongoose')
 const path = require('path');
-var cors = require('cors')
-const http = require('http');
-const WebSocket = require('ws');
 
+const http = require('http');
+const WebSocket = require('ws')
 
 var app = express()
-var cors = require('cors')
+
 const db = mongoose.connection
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -67,17 +65,12 @@ const wss = new WebSocket.Server({
   server,
 });
 var clients=[]
-// app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.use(cors()) 
-app.get('/', (req, res) =>{
-  res.sendFile(path.join(__dirname, "..", "..", 'frontend', 'build', 'index.html'));
-});
-app.use(express.static(path.join(__dirname, "..", "..", 'frontend', 'build')));
 
 wss.on('connection', function connection(client){
   console.log('wss connected')
-  client.sendEvent = (e) => client.send(JSON.stringify(e));
+  client.sendEvent = function (e) {client.send(JSON.stringify(e));}
 
   client.on('message', async function incoming(m){
     m = JSON.parse(m);
@@ -91,7 +84,7 @@ wss.on('connection', function connection(client){
         console.log({fullName})
         let err=check(fullName, password)
         if(err){
-          client.sendEvent([
+          await client.sendEvent([
             'ERROR',
             err
           ])
@@ -100,14 +93,14 @@ wss.on('connection', function connection(client){
           const user = await Name.findOne({email})
           if(!user){
             await Name.create({name:fullName, email, password, history:{ win: 0, lost: 0, tie: 0 }})
-            client.sendEvent([
+            await client.sendEvent([
               'SIGN_UP',
               'User created'
             ])
             console.log("user created")
           }
           else{
-            client.sendEvent([
+            await client.sendEvent([
               'ERROR',
               'User already exists!!'
             ])
@@ -116,12 +109,17 @@ wss.on('connection', function connection(client){
         }
         break
       }
-
+      case 'CANCEL':{
+        const name = data
+        const found = clients.findIndex(element => element.username===name);
+        clients.splice(found,1)
+        break
+      }
       case "SIGN_IN": {
         const { email, password } = data
         const user = await Name.findOne({email, password})
         if(!user){
-          client.sendEvent([
+          await client.sendEvent([
             'ERROR',
             'User does not exist!!'
           ])
@@ -134,7 +132,7 @@ wss.on('connection', function connection(client){
             client.email = user.email
             client.history = user.history
             clients.push(client)
-            client.sendEvent([
+            await client.sendEvent([
               'SIGN_IN',
               [user.name, user.email, user.history]
             ])
@@ -143,7 +141,7 @@ wss.on('connection', function connection(client){
             
           }
           else{
-            client.sendEvent([
+            await client.sendEvent([
               'ERROR',
               'Wrong password!!'
             ])
@@ -159,13 +157,13 @@ wss.on('connection', function connection(client){
         // console.log(something)
         // if (game === new_game)
         if (something === 'Not your turn!'){
-          client.sendEvent([
+          await client.sendEvent([
             'ERROR',
             something
           ])
         }
         else if (something === 'This line is full!'){
-          client.sendEvent([
+          await client.sendEvent([
             'ERROR',
             something
           ])
@@ -184,17 +182,17 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
           }
-          clients.forEach((client)=>{
-            client.sendEvent([
+          clients.forEach(async (client)=>{
+            await client.sendEvent([
               'END',
               [game, winner]
             ])
           })
-          
+          clients=[]
         }
         else {
-          clients.forEach((client)=>{
-            client.sendEvent([
+          clients.forEach(async (client)=>{
+            await client.sendEvent([
               'PLACE',
               something
             ])
@@ -203,10 +201,62 @@ wss.on('connection', function connection(client){
         }
         break
       }
+      case "LOGOUT":{
+        const player = data
+        var s = clients
+        console.log(clients)
+        console.log("---------------------------------------")
+        clients=s.filter(element => element.username !== player)
+        console.log(clients)
+        
+        
+        break
+      }
+      case "NEWGAME":{
+        const player = data
+        var s = clients
+        clients=s.filter(element => element.username !== player)
+        console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ")
+        console.log(clients)
+        const user = await Name.findOne({name:player})
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        console.log(user)
+        await client.sendEvent([
+          'NEWGAME',
+          user
+        ])
+        break
+      }
+      case "RESIGN":{
+        const player = data
+        let winner = 'w'
+        let game = await Game.findOne({})
+        if(player[1] === 'b') {
+          await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
+          await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
+        }
+        else  {
+            winner = 'b'
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
+        }
+        
+        clients.forEach(async (client)=>{
+          if (client.username !== player[0]){
+            await client.sendEvent([
+              'END',
+              [game, winner]
+            ])
+          }
+          
+        })
+        clients=[]
+      }
+
     }
   })
 })
 
-server.listen(process.env.PORT, () => {
-  console.log(`Server listening at http://localhost:${process.env.PORT}`);
+server.listen(4000, () => {
+  console.log('Server listening at http://localhost:4000');
 });

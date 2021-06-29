@@ -17,8 +17,8 @@ let initboard=[
 
 
 const useBoard=()=>{
-    // const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
-    const [lefttime,setLefttime]=useState([6000,6000])
+    const [time,setTime]=useState(0)
+    const [lefttime,setLefttime]=useState(2*60*1000)
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
     const [player, setPlayer]=useState(['null','e',true,[0,0,0]]) 
@@ -28,18 +28,57 @@ const useBoard=()=>{
     const [msg,setMsg]=useState({content:""})
 
     const [gameState, setGameState] = useState('playing')
-
+    const prejudge = (col, row)=>{
+        if (player[1] !== turn) return null
+        else {
+            if (board[col][0] !== 'e') return null
+            else{
+                /* apply gravity */
+                let last = 0
+                while(board[col][last] === 'e' && last <= 6) last += 1
+                board[col][last-1] = turn
+                console.log("setting board")
+                setBoard(board)
+            }
+        }
+    }
     const server = new WebSocket(window.location.origin.replace(/^http/, 'ws'))
-    server.onopen = () => console.log('Server connected3.');
-    server.onmessage = (m) => {
-        console.log(server)
-        m = m.data
-        onEvent(JSON.parse(m));
-    };
-    server.sendEvent = (e) => server.send(JSON.stringify(e));
+    useEffect(()=>{
+        server.onmessage = (m) => {
+            console.log(server)
+            m = m.data
+            onEvent(JSON.parse(m));
+        };
+        server.onopen = () => console.log('Server connected2.');
+        server.sendEvent = function(e) {server.send(JSON.stringify(e));}
 
+    })
+    // server.wait = function(callback, interval){
+    //     console.log(server.readyState)
+    //     if (server.readyState === 1) callback()
+    //     else {
+    //         setTimeout(function () {
+    //             server.wait(callback, interval);
+    //         }, interval);
+    //     }
+    // }
+    // server.sendEvent = function(e){
+    //     server.wait(async function (){
+    //         await server.send(JSON.stringify(e))
+    //     })
+    // }
 
-    const pressSignIn = async (args)=>{
+    
+    useEffect(()=>{
+        console.log(lefttime)
+        console.log(time, Date.now())
+        // const timer=setInterval(()=>{
+        //     setLefttime(lefttime-(Date.now()-time))
+        // },1000)
+        // return ()=>clearInterval(timer)
+    },[time])
+
+    const pressSignIn = async(args)=>{
         
         const email = args.email 
         const password = args.password
@@ -72,38 +111,19 @@ const useBoard=()=>{
             { fullName, email, password}
         ])
         
-        
-        
-        
-        
     }
 
-    const pressCancel = ()=>{
+    const pressCancel =async()=>{
+        console.log(server)
+        await server.sendEvent([
+            'CANCEL',
+            server.username
+        ])
         setStatus('signin')
     }
 
-    
-    const pressstart=(name)=>{
-        if(server) server.close()
-        console.log("start connecting")
-        server.onopen = () => {
-            console.log('WebSocket Client Connected');
-            setStatus('matching')
-          };
-        
-
-        server.on('connect_error',(err)=>{
-            setMsg({content:err.message})
-            //handle name exist or name invalid
-            setStatus('initial')
-        })
-        
-        
-    }
-
-
-    const onEvent = (e) => {
-        const [ type, data ]= e;
+    const onEvent = async function(e) {
+        const [ type, data ] = e;
         console.log(type, data)
         // const errorDOM = document.getElementById('error');
         // const boardDOM = document.getElementById('board')
@@ -130,6 +150,7 @@ const useBoard=()=>{
                 console.log(clients)
                 break
             }
+
             case 'START': {
                 setStatus('ingame')
                 const [new_game,first] = data
@@ -144,45 +165,24 @@ const useBoard=()=>{
                     setOpponent([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
                     
                 }
+                // const timer=setInterval(()=>{
+                //     setLefttime(lefttime-(Date.now()-time))
+                // },1000)
+                // return ()=>clearInterval(timer)
+                setTime(Date.now)
                 setTurn('w')
-                setLefttime([new_game.players.white.time,new_game.players.black.time])
-                console.log(new_game.board)
                 setBoard(new_game.board)
 
                 break
-                
-                
-                
-                //boardDOM.innerHTML = ''
-                // new_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
             }
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
+                setTurn(new_game.turn)
                 setBoard(new_game.board)
+                setTime(Date.now())
+                setLefttime(2*60*1000)
                 break
-                // boardDOM.innerHTML = ''
-                // new_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
             }
             case 'END': {
                 const [end_game, winner] = data
@@ -190,20 +190,26 @@ const useBoard=()=>{
                 setBoard(end_game.board)
                 setGameState("end")
                 setGameResult([winner, ''])
+                
                 break
-                // boardDOM.innerHTML = ''
-                // end_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
-                // errorDOM.innerHTML = `${winner} side wins!`
+            }
+            case "NEWGAME":{
+                setStatus('matching')
+                setGameState("playing")
+                console.log("server back newgame")
+                
+                const user = data
+                const email = user.email 
+                const password = user.password
+                console.log(email)
+                console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+                console.log(status)
+                setStatus('matching')
+                await server.sendEvent([
+                    'SIGN_IN',
+                    {email, password}
+                ])
+                console.log("send sign in ")
             }
         }
         //resetInputs();
@@ -211,9 +217,10 @@ const useBoard=()=>{
 
 
 
-    const place=(row, col, username)=>{
+    const place= async(row, col, username)=>{
         console.log(row, col)
-        server.sendEvent([
+        prejudge(col, row)
+        await server.sendEvent([
             'PLACE',
             {col, row, username}
         ])
@@ -222,19 +229,37 @@ const useBoard=()=>{
         place(row_index, col_index, username)
     }
 
-    const pressResign=()=>{
-
-    }
-
-    const pressLogout=()=>{
-        server.sendEvent([
-            'LOGOUT',
-            player[0]
+    const pressResign=async(player)=>{
+        setStatus('signin')
+        console.log(player)
+        console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+        await server.sendEvent([
+            'RESIGN',
+            player
         ])
     }
 
-    const pressRestart=()=>{
+    const pressLogout= async (args)=>{
         
+        const player = args.player
+
+        await server.sendEvent([
+            'LOGOUT',
+            player
+        ])
+        setStatus('signin')
+        setGameState("playing")
+    }
+
+    const pressRestart=async(args)=>{
+        const player = args.player
+        console.log("send event newgame")
+        await server.sendEvent([
+            'NEWGAME',
+            player
+        ])
+        console.log("finish send event newgame")
+        setStatus('matching')
     }
 
     let gameHooks = [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click]
