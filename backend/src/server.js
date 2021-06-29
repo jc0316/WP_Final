@@ -6,7 +6,7 @@ const board    = require("./board")
 const express = require('express');
 const mongoose = require('mongoose')
 const path = require('path');
-
+var cors = require('cors')
 const http = require('http');
 const WebSocket = require('ws')
 
