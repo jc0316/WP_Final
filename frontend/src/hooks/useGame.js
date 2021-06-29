@@ -1,10 +1,8 @@
 import {useEffect, useState} from 'react'
+const server = new WebSocket('ws://localhost:4000')
+server.onopen = () => console.log('Server connected2.');
+server.sendEvent = function(e) {server.send(JSON.stringify(e));}
 
-
-
-
-
-var socket = null;
 let initboard=[
     ['e','e','e','e','e','e'],
     ['e','e','e','e','e','e'],
@@ -42,17 +40,12 @@ const useBoard=()=>{
             }
         }
     }
-    const server = new WebSocket('ws://localhost:4000')
-    useEffect(()=>{
-        server.onmessage = (m) => {
-            console.log(server)
-            m = m.data
-            onEvent(JSON.parse(m));
-        };
-        server.onopen = () => console.log('Server connected2.');
-        server.sendEvent = function(e) {server.send(JSON.stringify(e));}
 
-    })
+    server.onmessage = (m) => {
+        console.log(server)
+        m = m.data
+        onEvent(JSON.parse(m));
+    };
     // server.wait = function(callback, interval){
     //     console.log(server.readyState)
     //     if (server.readyState === 1) callback()
@@ -83,7 +76,7 @@ const useBoard=()=>{
         const email = args.email 
         const password = args.password
         //let res = await instance.post('/login',{email:email,password:password})
-        await server.sendEvent([
+        server.sendEvent([
             'SIGN_IN',
             {email, password}
         ])
@@ -106,7 +99,7 @@ const useBoard=()=>{
         const email = args.email
         const password = args.password
         const fullName = `${firstName} ${lastName}`
-        await server.sendEvent([
+        server.sendEvent([
             'SIGN_UP',
             { fullName, email, password}
         ])
@@ -115,14 +108,14 @@ const useBoard=()=>{
 
     const pressCancel =async()=>{
         console.log(server)
-        await server.sendEvent([
+        server.sendEvent([
             'CANCEL',
             server.username
         ])
         setStatus('signin')
     }
 
-    const onEvent = async function(e) {
+    const onEvent = function(e) {
         const [ type, data ] = e;
         console.log(type, data)
         // const errorDOM = document.getElementById('error');
@@ -205,7 +198,7 @@ const useBoard=()=>{
                 console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
                 console.log(status)
                 setStatus('matching')
-                await server.sendEvent([
+                server.sendEvent([
                     'SIGN_IN',
                     {email, password}
                 ])
@@ -220,7 +213,7 @@ const useBoard=()=>{
     const place= async(row, col, username)=>{
         console.log(row, col)
         prejudge(col, row)
-        await server.sendEvent([
+        server.sendEvent([
             'PLACE',
             {col, row, username}
         ])
@@ -233,7 +226,7 @@ const useBoard=()=>{
         setStatus('signin')
         console.log(player)
         console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
-        await server.sendEvent([
+        server.sendEvent([
             'RESIGN',
             player
         ])
@@ -243,7 +236,7 @@ const useBoard=()=>{
         
         const player = args.player
 
-        await server.sendEvent([
+        server.sendEvent([
             'LOGOUT',
             player
         ])
@@ -254,7 +247,7 @@ const useBoard=()=>{
     const pressRestart=async(args)=>{
         const player = args.player
         console.log("send event newgame")
-        await server.sendEvent([
+        server.sendEvent([
             'NEWGAME',
             player
         ])

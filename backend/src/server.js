@@ -81,10 +81,9 @@ wss.on('connection', function connection(client){
     switch (type){
       case 'SIGN_UP': {
         const { fullName, email, password } = data
-        console.log({fullName})
         let err=check(fullName, password)
         if(err){
-          await client.sendEvent([
+          client.sendEvent([
             'ERROR',
             err
           ])
@@ -93,14 +92,14 @@ wss.on('connection', function connection(client){
           const user = await Name.findOne({email})
           if(!user){
             await Name.create({name:fullName, email, password, history:{ win: 0, lost: 0, tie: 0 }})
-            await client.sendEvent([
+            client.sendEvent([
               'SIGN_UP',
               'User created'
             ])
             console.log("user created")
           }
           else{
-            await client.sendEvent([
+            client.sendEvent([
               'ERROR',
               'User already exists!!'
             ])
@@ -119,7 +118,7 @@ wss.on('connection', function connection(client){
         const { email, password } = data
         const user = await Name.findOne({email, password})
         if(!user){
-          await client.sendEvent([
+          client.sendEvent([
             'ERROR',
             'User does not exist!!'
           ])
@@ -132,16 +131,15 @@ wss.on('connection', function connection(client){
             client.email = user.email
             client.history = user.history
             clients.push(client)
-            await client.sendEvent([
+            client.sendEvent([
               'SIGN_IN',
               [user.name, user.email, user.history]
             ])
-            console.log(client)
             start_match(client, clients)
             
           }
           else{
-            await client.sendEvent([
+            client.sendEvent([
               'ERROR',
               'Wrong password!!'
             ])
@@ -157,13 +155,13 @@ wss.on('connection', function connection(client){
         // console.log(something)
         // if (game === new_game)
         if (something === 'Not your turn!'){
-          await client.sendEvent([
+          client.sendEvent([
             'ERROR',
             something
           ])
         }
         else if (something === 'This line is full!'){
-          await client.sendEvent([
+          client.sendEvent([
             'ERROR',
             something
           ])
@@ -182,8 +180,8 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
           }
-          clients.forEach(async (client)=>{
-            await client.sendEvent([
+          clients.forEach( (client)=>{
+            client.sendEvent([
               'END',
               [game, winner]
             ])
@@ -192,7 +190,7 @@ wss.on('connection', function connection(client){
         }
         else {
           clients.forEach(async (client)=>{
-            await client.sendEvent([
+            client.sendEvent([
               'PLACE',
               something
             ])
@@ -204,10 +202,7 @@ wss.on('connection', function connection(client){
       case "LOGOUT":{
         const player = data
         var s = clients
-        console.log(clients)
-        console.log("---------------------------------------")
         clients=s.filter(element => element.username !== player)
-        console.log(clients)
         
         
         break
@@ -216,12 +211,8 @@ wss.on('connection', function connection(client){
         const player = data
         var s = clients
         clients=s.filter(element => element.username !== player)
-        console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ")
-        console.log(clients)
         const user = await Name.findOne({name:player})
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        console.log(user)
-        await client.sendEvent([
+        client.sendEvent([
           'NEWGAME',
           user
         ])
@@ -241,9 +232,9 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
         }
         
-        clients.forEach(async (client)=>{
+        clients.forEach( (client)=>{
           if (client.username !== player[0]){
-            await client.sendEvent([
+            client.sendEvent([
               'END',
               [game, winner]
             ])
