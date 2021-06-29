@@ -14,4 +14,4 @@ const NameSchema = Schema({
 
 const Name = mongoose.model('Name', NameSchema)
 
-export default Name
+module.exports = Name

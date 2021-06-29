@@ -1,15 +1,14 @@
 require('dotenv').config()
-const Name     = require("./models/name")
+const Name     = require('./models/name')
 const Game     = require("./models/game")
 const matching = require("./matching")
 const board    = require("./board")
-
 const express = require('express');
 const mongoose = require('mongoose')
 const path = require('path');
 
 const http = require('http');
-const WebSocket = require('ws');
+const WebSocket = require('ws')
 
 var app = express()
 

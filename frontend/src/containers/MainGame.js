@@ -28,7 +28,7 @@ function MainGame(props){
                     color={player[1]}
                     player={player[0]}
                     pieces={player[1] === 'b'?pieces[0]:pieces[1]}
-                    timeleft={lefttime[player[1]=='w'?0:1]}
+                    timeleft={player[1] === turn? lefttime:''}
                     connected={player[2]}
                     turn={turn}
                     history = {player[3]}/>
@@ -40,7 +40,7 @@ function MainGame(props){
                     player={opponent[0]}
                     pieces={opponent[1] === 'b'?pieces[0]:pieces[1]}
                     connected={opponent[2]}
-                    timeleft={lefttime[player[1]=='w'?1:0]}
+                    timeleft={player[1] === turn? lefttime:''}
                     turn={turn}
                     history = {opponent[3]}/>
             </div>

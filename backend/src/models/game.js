@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GameSchema = Schema({
-    time: { type: Number, required: true},
     turn:{
         type: String,
         enum:["b","w","end"]
@@ -15,16 +14,14 @@ const GameSchema = Schema({
                 type: Object,
                 properties:{
                     name:{type: String},
-                    email:{type: String},
-                    time:{type: Number}
+                    email:{type: String}
                 },
             },
             black:{
                 type: Object,
                 properties:{
                     name:{type: String},
-                    email:{type: String},
-                    time:{type: Number}
+                    email:{type: String}
                 },
             }
         },
@@ -48,4 +45,4 @@ const GameSchema = Schema({
 
 const Game = mongoose.model('Game', GameSchema)
 
-export default Game
+module.exports = Game

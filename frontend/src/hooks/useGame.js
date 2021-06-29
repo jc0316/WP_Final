@@ -17,8 +17,7 @@ let initboard=[
 
 
 const useBoard=()=>{
-    const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
-    const [lefttime,setLefttime]=useState([6000,6000])
+    const [lefttime,setLefttime]=useState(2*60*1000)
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
     const [player, setPlayer]=useState(['null','e',true,[0,0,0]]) 
@@ -143,7 +142,7 @@ const useBoard=()=>{
                     
                 }
                 setTurn('w')
-                setLefttime([new_game.players.white.time,new_game.players.black.time])
+                setLefttime(100)
                 console.log(new_game.board)
                 setBoard(new_game.board)
 
