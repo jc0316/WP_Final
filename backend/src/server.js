@@ -1,8 +1,8 @@
 require('dotenv').config()
-import Name from "./models/name";
-import Game from "./models/game";
-import matching from "./matching";
-import board from "./board"
+const Name      = require("./models/name")
+const Game      = require("./models/game")
+const matching  = require("./matching")
+const board     = require("./board")
 
 const express = require('express');
 const mongoose = require('mongoose')

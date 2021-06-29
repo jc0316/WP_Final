@@ -1,5 +1,3 @@
-
-import Name from "./models/name";
 exports.place = (col, row, game, username)=>{
     const turn = game.turn
     console.log(turn, username, game.players.black.name)
