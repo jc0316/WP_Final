@@ -17,7 +17,7 @@ let initboard=[
 
 
 const useBoard=()=>{
-    const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
+    // const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
     const [lefttime,setLefttime]=useState([6000,6000])
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
@@ -227,7 +227,10 @@ const useBoard=()=>{
     }
 
     const pressLogout=()=>{
-        
+        server.sendEvent([
+            'LOGOUT',
+            player[0]
+        ])
     }
 
     const pressRestart=()=>{
