@@ -1,10 +1,10 @@
 
 import Name from "./models/name";
-exports.place = (col, row, game, client)=>{
+exports.place = (col, row, game, username)=>{
     const turn = game.turn
-    console.log(turn, client.username, game.players.black.name)
-    if (turn === 'w' && client.username === game.players.black.name) return 'Not your turn!'
-    else if(turn === 'b' && client.username === game.players.white.name) return 'Not your turn!'
+    console.log(turn, username, game.players.black.name)
+    if (turn === 'w' && username === game.players.black.name) return 'Not your turn!'
+    else if(turn === 'b' && username === game.players.white.name) return 'Not your turn!'
     else {
         if (game.board[col][0] !== 'e') return 'This line is full!'
         else{
@@ -67,7 +67,6 @@ exports.place = (col, row, game, client)=>{
             }
             /* check if full and change turns */
             let full = true
-            console.log(game.board)
             for (var i=0; i<7; i++){
                 if (game.board[i][0] === 'e'){
                     full = false

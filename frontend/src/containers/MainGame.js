@@ -15,7 +15,7 @@ function MainGame(props){
 
     const [pieces, setPieces] =useState([2, 2])
 
-    console.log("gr", gameResult)
+    console.log("player", player)
 
     return( 
         <div className="game">
@@ -50,7 +50,8 @@ function MainGame(props){
                 gameState==="playing"?
                     <Board 
                         handle_1x1_click={handle_1x1_click}
-                        board={board}/>:
+                        board={board}
+                        username={player[0]}/>:
                     <Result
                         player={player}
                         gameResult={gameResult}

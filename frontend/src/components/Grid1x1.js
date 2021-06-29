@@ -10,6 +10,7 @@ import hint from "../images/hint.jpg";
 
 function Grid1x1(props){
     const renderSwitch=(value)=>{
+        console.log(value)
         switch(value){
             case 'w': return (<img className="piece" src={White}/>)
             case 'b': return (<img className="piece" src={Black}/>)
@@ -19,10 +20,9 @@ function Grid1x1(props){
 
         }
     }
-    
     return (
-        <div className="Grid1x1" 
-            onClick={props.handle_1x1_click.bind(this,props.row_index, props.col_index)}>
+        <div className="Grid1x1" id={`${props.row_index}_${props.col_index}`}
+            onClick={props.handle_1x1_click.bind(this, props.row_index, props.col_index, props.username)}>
             {renderSwitch(props.value)}
         </div>
     )

@@ -6,12 +6,13 @@ import {useEffect, useState} from 'react'
 
 var socket = null;
 let initboard=[
-    ['e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e']
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e'],
+    ['e','e','e','e','e','e']
 ]
 
 
@@ -31,6 +32,7 @@ const useBoard=()=>{
     const server = new WebSocket('ws://localhost:4000')
     server.onopen = () => console.log('Server connected2.');
     server.onmessage = (m) => {
+        console.log(server)
         m = m.data
         onEvent(JSON.parse(m));
     };
@@ -102,6 +104,7 @@ const useBoard=()=>{
 
     const onEvent = (e) => {
         const [ type, data ]= e;
+        console.log(type, data)
         // const errorDOM = document.getElementById('error');
         // const boardDOM = document.getElementById('board')
         // errorDOM.innerHTML = ''
@@ -115,6 +118,10 @@ const useBoard=()=>{
                 break;
             }
             case 'SIGN_IN':{
+                const [name, email, history] = data
+                server.username = name
+                server.email = email
+                server.history = history
                 setStatus('matching')
             }
             case 'WAITING': {
@@ -200,11 +207,15 @@ const useBoard=()=>{
 
 
 
-    const place=(x,y)=>{
-        if(turn!==player[1])return
+    const place=(row, col, username)=>{
+        console.log(row, col)
+        server.sendEvent([
+            'PLACE',
+            {col, row, username}
+        ])
     }
-    const handle_1x1_click=(row_index, col_index)=>{
-        place(row_index, col_index)
+    const handle_1x1_click=(row_index, col_index, username)=>{
+        place(row_index, col_index, username)
     }
 
     const pressResign=()=>{

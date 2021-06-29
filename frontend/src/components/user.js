@@ -43,7 +43,7 @@ function User(props){
                     <img className="face" src={face}/>
                 </div>
                 <div className="card-stats">
-                    W:{stats[0]}/L:{stats[1]}/T:{stats[2]}
+                    W:{stats[0]}/ L:{stats[1]}/ T:{stats[2]}
                 </div>
                 <div className="card-stats">
                     WIN RATE : {Math.floor(winPercentage)}%

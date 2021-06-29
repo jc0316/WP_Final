@@ -130,8 +130,9 @@ wss.on('connection', function connection(client){
             clients.push(client)
             client.sendEvent([
               'SIGN_IN',
-              'Login success!!'
+              [user.name, user.email, user.history]
             ])
+            console.log(client)
             start_match(client, clients)
             
           }
@@ -146,10 +147,10 @@ wss.on('connection', function connection(client){
       }
 
       case "PLACE": {
-        const { col, row } = data
+        const { col, row, username } = data
         let game = await Game.findOne({})
-        const something = board.place(col, row, game, client)
-        console.log(something)
+        const something = board.place(col, row, game, username)
+        // console.log(something)
         // if (game === new_game)
         if (something === 'Not your turn!'){
           client.sendEvent([

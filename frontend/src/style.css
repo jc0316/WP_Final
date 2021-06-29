@@ -138,10 +138,11 @@ button {
 
 .row {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .board {
+    display: flex;
     margin: 50px;
     border: 5px solid black;
     box-shadow: 0px 0px 100px rgba(255, 255, 255, 0.438),
