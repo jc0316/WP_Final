@@ -48,4 +48,4 @@ const GameSchema = Schema({
 
 const Game = mongoose.model('Game', GameSchema)
 
-export default Game
+module.exports = Game

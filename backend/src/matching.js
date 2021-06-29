@@ -46,4 +46,4 @@ const matching = async (client1, client2)=>{
     return this_game
 }
 
-export default matching
+module.exports = matching
