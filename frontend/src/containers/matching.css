@@ -30,14 +30,17 @@ h2::before {
   left: 0;
   width: 0;
   height: 100%;
-  color: #01fe87;
+  color: #00e479;
   -webkit-text-stroke: 0vw #383d52;
-  border-right: 2px solid #01fe87;
+  border-right: 2px solid #00c468;
   overflow: hidden;
-  animation: animate 6s linear infinite;
+  animation: matching_animate 6s linear infinite;
+  text-shadow: 0 0 10px #236e00,
+    0 0 15px #247000,
+    0 0 20px #247000;
 }
 
-@keyframes animate {
+@keyframes matching_animate {
 
   0%,
   10%,

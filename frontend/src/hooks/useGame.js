@@ -1,144 +1,223 @@
 import {useEffect, useState} from 'react'
-import axios from 'axios'
-import { io } from "socket.io-client"
+
+
+
+
 
 var socket = null;
 let initboard=[
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','b','w','e','e','e'],
-    ['e','e','e','w','b','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e'],
-    ['e','e','e','e','e','e','e','e']
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e'],
+    ['e','e','e','e','e','e','e']
 ]
 
-const instance = axios.create({ 
-    baseURL: '/api/',
-    credentials: true,
-})
 
 const useBoard=()=>{
     const [time,setTime]=useState([0,6000,6000]) //settime wlefttime blefttime
     const [lefttime,setLefttime]=useState([6000,6000])
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
-    const [player, setPlayer]=useState(['null','e',true]) 
-    const [opponent, setOppanent]=useState(['null', 'e',true])
+    const [player, setPlayer]=useState(['null','e',true,[0,0,0]]) 
+    const [opponent, setOpponent]=useState(['null', 'e',true,[0,0,0]])
     const [status, setStatus] = useState('signin')
-    const [gameresult, setResult] = useState(['',''])
+    const [gameResult, setGameResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
-    const pressSignIn = async (email,password)=>{
-        setStatus('matching')
+    const [gameState, setGameState] = useState('playing')
 
-        let res = await instance.post('/login',{email:email,password:password})
-        if(res.data.status===200){
-            const fullName = res.data.name
-            pressstart(fullName)
-        }
-        else{
-            setMsg({content:res.data.content})
-            //TODO handle error
-        }
+    const server = new WebSocket('ws://localhost:4000')
+    server.onopen = () => console.log('Server connected2.');
+    server.onmessage = (m) => {
+        m = m.data
+        onEvent(JSON.parse(m));
+    };
+    server.sendEvent = (e) => server.send(JSON.stringify(e));
+
+
+    const pressSignIn = async (args)=>{
+        
+        const email = args.email 
+        const password = args.password
+        //let res = await instance.post('/login',{email:email,password:password})
+        await server.sendEvent([
+            'SIGN_IN',
+            {email, password}
+        ])
+        
+        
     }
 
     const pressSignUp = ()=>{
         setStatus('signup')
-
-        
     }
 
     const pressBackToSignIn = ()=>{
         setStatus('signin')
     }
 
-    const pressRegister = async(firstName,lastName,password,email)=>{
-        setStatus('signin')
-        let res = await instance.post('/register',{firstName:firstName,lastName:lastName,password:password,email:email})
-        if(res.data.status===200){
-            //看是要回登錄畫面還是直接開始遊戲
-        }
-        else{
-            setMsg({content:res.data.content})
-            //TODO handle error
-        }
+    const pressRegister = async(args)=>{
+        
+        const firstName = args.firstName
+        const lastName = args.lastName
+        const email = args.email
+        const password = args.password
+        const fullName = `${firstName} ${lastName}`
+        await server.sendEvent([
+            'SIGN_UP',
+            { fullName, email, password}
+        ])
+        
+        
+        
+        
+        
     }
 
     const pressCancel = ()=>{
         setStatus('signin')
     }
 
-
+    
     const pressstart=(name)=>{
-        if(socket) socket.close()
-        socket=io("/",{query:{auth:name}});//transmit {auth:name} to server , get by using socket.handshake.query in io.on()
-        //The query parameters cannot be updated for the duration of the session, 
-        //so changing the query on the client-side will only be effective 
-        //when the current session gets closed and a new one is created
+        if(server) server.close()
         console.log("start connecting")
-        socket.on('connect',()=>{
-            console.log("connect to server with name "+socket.io.opts.query.auth)
+        server.onopen = () => {
+            console.log('WebSocket Client Connected');
             setStatus('matching')
-        })
-        socket.on('connect_error',(err)=>{
+          };
+        
+
+        server.on('connect_error',(err)=>{
             setMsg({content:err.message})
             //handle name exist or name invalid
             setStatus('initial')
         })
         
-        // socket.on('match',(match)=>{
-        //     // match
-        //     // {
-        //     //     matchID:just a num,
-        //     //     turn:'b'or 'w'or'end',
-        //     //     player:{
-        //     //         white_player:{
-        //     //             name:
-        //     //             time:
-        //     //             online: T/F
-        //     //         },
-        //     //         black_player:{
-        //     //             name:
-        //     //             time:
-        //     //             online: T/F
-        //     //         }
-        //     //     },
-        //     //     board:8*8array
-        //     // }
-        //     // console.log(match.board)
-        //     // console.log(match)
-        //     let tmpcolor='e'
-        //     if(socket.io.opts.query.auth===match.player.white_player.name){
-        //         setPlayer(()=>[socket.io.opts.query.auth,'w',match.player.white_player.online]);
-        //         setOppanent(()=>[match.player.black_player.name,'b',match.player.black_player.online])
-        //         tmpcolor='w'
-        //     }else {
-        //         setPlayer(()=>[socket.io.opts.query.auth,'b',match.player.black_player.online]);
-        //         setOppanent(()=>[match.player.white_player.name,'w',match.player.white_player.online])
-        //         tmpcolor='b'
-        //     }
-
-        //     setTurn(()=>match.turn)
-        //     setTime(()=>[match.time,match.player.white_player.time,match.player.black_player.time])
-        //     setBoard(()=>givetips(match.board,tmpcolor,match.turn))
-        //     if (match.turn === 'end'){
-        //         setStatus('endgame');
-        //         console.log("end!!!")
-        //         socket.close()
-        //         socket=null
-        //         setResult(checkwinner(match))
-                
-        //     }else{
-        //         setStatus('start')
-        //     }
-
-        //     // setRole(socket.io.opts.query.auth===match.player.white_player.name?'w':'b')
-        // })
+        
     }
 
 
-    return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel]
+    const onEvent = (e) => {
+        const [ type, data ]= e;
+        // const errorDOM = document.getElementById('error');
+        // const boardDOM = document.getElementById('board')
+        // errorDOM.innerHTML = ''
+        switch (type) {
+            case 'ERROR': {
+                alert(data)
+                break;
+            }
+            case 'SIGN_UP': {
+                setStatus('signin')
+                break;
+            }
+            case 'SIGN_IN':{
+                setStatus('matching')
+            }
+            case 'WAITING': {
+                const { client, clients } = data
+                console.log(client)
+                console.log(clients)
+                break
+            }
+            case 'START': {
+                setStatus('ingame')
+                const [new_game,first] = data
+                //console.log(new_game)
+                if (first === "first" ){
+                    setPlayer([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
+                    setOpponent([new_game.players.black.name,'b',true,[new_game.players.black.history.win,new_game.players.black.history.lost,new_game.players.black.history.tie]])
+                    
+                }
+                else{
+                    setPlayer([new_game.players.black.name,'b',true,[new_game.players.black.history.win,new_game.players.black.history.lost,new_game.players.black.history.tie]])
+                    setOpponent([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
+                    
+                }
+                console.log(player)
+                setTurn('w')
+                setLefttime([new_game.players.white.time,new_game.players.black.time])
+                setBoard(new_game.board)
+                
+                
+                
+                //boardDOM.innerHTML = ''
+                // new_game.board.forEach((array, col)=>{
+                //     let div = document.createElement("div")
+                //     boardDOM.appendChild(div)
+                //     array.forEach((element, row)=>{
+                //         let button = document.createElement("button")
+                //         button.innerHTML = element
+                //         button.id = String(col)+"_"+String(row)
+                //         button.onclick = function() {place(button.id)}
+                //         div.appendChild(button)
+                //     })
+                // })
+            }
+            case 'PLACE': {
+                const new_game = data
+                console.log(new_game)
+                // boardDOM.innerHTML = ''
+                // new_game.board.forEach((array, col)=>{
+                //     let div = document.createElement("div")
+                //     boardDOM.appendChild(div)
+                //     array.forEach((element, row)=>{
+                //         let button = document.createElement("button")
+                //         button.innerHTML = element
+                //         button.id = String(col)+"_"+String(row)
+                //         button.onclick = function() {place(button.id)}
+                //         div.appendChild(button)
+                //     })
+                // })
+            }
+            case 'END': {
+                const {end_game, winner} = data
+                console.log(end_game)
+                // boardDOM.innerHTML = ''
+                // end_game.board.forEach((array, col)=>{
+                //     let div = document.createElement("div")
+                //     boardDOM.appendChild(div)
+                //     array.forEach((element, row)=>{
+                //         let button = document.createElement("button")
+                //         button.innerHTML = element
+                //         button.id = String(col)+"_"+String(row)
+                //         button.onclick = function() {place(button.id)}
+                //         div.appendChild(button)
+                //     })
+                // })
+                // errorDOM.innerHTML = `${winner} side wins!`
+            }
+        }
+        //resetInputs();
+  };
+
+
+
+    const place=(x,y)=>{
+        if(turn!==player[1])return
+    }
+    const handle_1x1_click=(row_index, col_index)=>{
+        place(row_index, col_index)
+    }
+
+    const pressResign=()=>{
+
+    }
+
+    const pressLogout=()=>{
+        
+    }
+
+    const pressRestart=()=>{
+        
+    }
+
+    let gameHooks = [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click]
+    let gameButtons = [pressResign, pressLogout, pressRestart]
+
+    return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel, gameHooks, gameButtons]
 }
 export default useBoard;
