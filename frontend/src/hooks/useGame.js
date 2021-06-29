@@ -38,13 +38,13 @@ const useBoard=()=>{
     };
     server.sendEvent = (e) => server.send(JSON.stringify(e));
 
-
+    console.log(player)
     const pressSignIn = async (args)=>{
         
         const email = args.email 
         const password = args.password
         //let res = await instance.post('/login',{email:email,password:password})
-        await server.sendEvent([
+        server.sendEvent([
             'SIGN_IN',
             {email, password}
         ])
@@ -72,13 +72,14 @@ const useBoard=()=>{
             { fullName, email, password}
         ])
         
-        
-        
-        
-        
     }
 
     const pressCancel = ()=>{
+        console.log(server)
+        server.sendEvent([
+            'CANCEL',
+
+        ])
         setStatus('signin')
     }
 
@@ -103,7 +104,7 @@ const useBoard=()=>{
 
 
     const onEvent = (e) => {
-        const [ type, data ]= e;
+        const [ type, data ] = e;
         console.log(type, data)
         // const errorDOM = document.getElementById('error');
         // const boardDOM = document.getElementById('board')
@@ -119,9 +120,6 @@ const useBoard=()=>{
             }
             case 'SIGN_IN':{
                 const [name, email, history] = data
-                server.username = name
-                server.email = email
-                server.history = history
                 setStatus('matching')
             }
             case 'WAITING': {
@@ -150,39 +148,13 @@ const useBoard=()=>{
                 setBoard(new_game.board)
 
                 break
-                
-                
-                
-                //boardDOM.innerHTML = ''
-                // new_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
             }
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
                 setBoard(new_game.board)
+
                 break
-                // boardDOM.innerHTML = ''
-                // new_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
             }
             case 'END': {
                 const [end_game, winner] = data
@@ -190,20 +162,8 @@ const useBoard=()=>{
                 setBoard(end_game.board)
                 setGameState("end")
                 setGameResult([winner, ''])
+                
                 break
-                // boardDOM.innerHTML = ''
-                // end_game.board.forEach((array, col)=>{
-                //     let div = document.createElement("div")
-                //     boardDOM.appendChild(div)
-                //     array.forEach((element, row)=>{
-                //         let button = document.createElement("button")
-                //         button.innerHTML = element
-                //         button.id = String(col)+"_"+String(row)
-                //         button.onclick = function() {place(button.id)}
-                //         div.appendChild(button)
-                //     })
-                // })
-                // errorDOM.innerHTML = `${winner} side wins!`
             }
         }
         //resetInputs();

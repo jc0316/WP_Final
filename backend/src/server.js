@@ -1,13 +1,13 @@
 require('dotenv').config()
-import Name from "./models/name";
-import Game from "./models/game";
-import matching from "./matching";
-import board from "./board"
+const Name     = require("./models/name")
+const Game     = require("./models/game")
+const matching = require("./matching")
+const board    = require("./board")
 
 const express = require('express');
 const mongoose = require('mongoose')
 const path = require('path');
-var cors = require('cors')
+
 const http = require('http');
 const WebSocket = require('ws');
 
@@ -197,6 +197,9 @@ wss.on('connection', function connection(client){
         }
         break
       }
+
+      case 'CANCEL':
+
     }
   })
 })

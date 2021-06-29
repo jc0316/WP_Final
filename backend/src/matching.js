@@ -1,4 +1,4 @@
-import Game from "./models/game"
+const Game = require("./models/game")
 
 const new_board= [
     ['e', 'e', 'e', 'e', 'e', 'e'],
