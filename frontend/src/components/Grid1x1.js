@@ -12,8 +12,8 @@ function Grid1x1(props){
     const renderSwitch=(value)=>{
         console.log(value)
         switch(value){
-            case 'w': return (<img className="piece" src={White}/>)
-            case 'b': return (<img className="piece" src={Black}/>)
+            case 'w': return (<img className="piece" src={red}/>)
+            case 'b': return (<img className="piece" src={yellow}/>)
             case 'c': return (<img className="hint piece" src={Can} />)
             case 'e': return (<img className="piece" src={frame} />)
             default: return (<img/>)

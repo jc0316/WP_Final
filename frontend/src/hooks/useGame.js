@@ -169,6 +169,7 @@ const useBoard=()=>{
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
+                setBoard(new_game.board)
                 break
                 // boardDOM.innerHTML = ''
                 // new_game.board.forEach((array, col)=>{
