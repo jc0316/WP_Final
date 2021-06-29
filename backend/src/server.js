@@ -14,7 +14,6 @@ const WebSocket = require('ws');
 
 var app = express()
 var cors = require('cors')
-console.log(process.env)
 const db = mongoose.connection
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
