@@ -65,7 +65,11 @@ const wss = new WebSocket.Server({
   server,
 });
 var clients=[]
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(cors()) 
+app.get('/', (req, res) =>{
+  res.sendFile(path.join(__dirname, "..", "..", 'frontend', 'build', 'index.html'));
+});
+app.use(express.static(path.join(__dirname, "..", "..", 'frontend', 'build')));
 
 
 wss.on('connection', function connection(client){
@@ -257,6 +261,6 @@ wss.on('connection', function connection(client){
   })
 })
 
-server.listen(4000, () => {
-  console.log('Server listening at http://localhost:4000');
+server.listen(process.env.PORT, () => {
+  console.log(`Server listening at http://localhost:${process.env.PORT}`);
 });
