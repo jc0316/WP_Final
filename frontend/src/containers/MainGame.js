@@ -10,9 +10,7 @@ import './maingame.css'
 function MainGame(props){
     const [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click] = props.gameHooks
     const [pressResign, pressLogout, pressRestart] = props.gameButtons
-    const [modalVisible, setModalVisible] = useState(false)
 
-    const [pieces, setPieces] =useState([2, 2])
     
     console.log(player, opponent, turn)
     return( 
@@ -25,7 +23,6 @@ function MainGame(props){
                 <User 
                     color={player[1]}
                     player={player[0]}
-                    pieces={player[1] === 'b'?pieces[0]:pieces[1]}
                     timeleft={player[1] === turn? lefttime:'xx'}
                     connected={player[2]}
                     turn={turn}
@@ -36,7 +33,6 @@ function MainGame(props){
                 <User 
                     color={opponent[1]}
                     player={opponent[0]}
-                    pieces={opponent[1] === 'b'?pieces[0]:pieces[1]}
                     connected={opponent[2]}
                     timeleft={opponent[1] === turn? lefttime:'xx'}
                     turn={turn}
