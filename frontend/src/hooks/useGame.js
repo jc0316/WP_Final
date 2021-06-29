@@ -29,7 +29,7 @@ const useBoard=()=>{
 
     const [gameState, setGameState] = useState('playing')
 
-    const server = new WebSocket(`ws://localhost:${process.env.PORT}`)
+    const server = new WebSocket(location.origin.replace(/^http/, 'ws'))
     server.onopen = () => console.log('Server connected3.');
     server.onmessage = (m) => {
         console.log(server)
