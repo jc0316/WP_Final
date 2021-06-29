@@ -15,6 +15,7 @@ let initboard=[
     ['e','e','e','e','e','e']
 ]
 
+const server = new WebSocket(window.location.origin.replace(/^http/, 'ws'))
 
 const useBoard=()=>{
     const [time,setTime]=useState(0)
@@ -42,7 +43,7 @@ const useBoard=()=>{
             }
         }
     }
-    const server = new WebSocket(window.location.origin.replace(/^http/, 'ws'))
+    
     useEffect(()=>{
         server.onmessage = (m) => {
             console.log(server)
