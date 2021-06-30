@@ -21,7 +21,7 @@ function Grid1x1(props){
     }
     return (
         <div className="Grid1x1" id={`${props.row_index}_${props.col_index}`}
-            onClick={props.handle_1x1_click.bind(this, props.row_index, props.col_index, props.username)}>
+            onClick={props.handle_1x1_click.bind(this, props.row_index, props.col_index, props.username, props.turn)}>
             {renderSwitch(props.value)}
         </div>
     )
