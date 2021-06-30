@@ -22,7 +22,7 @@ Web Programming 109-2 Final Project
   
 ## 如何在 localhost 測試之詳細步驟
   * 打開兩個localhost:4000，各稱作**c1**跟**c2**
-    畢竟是對戰遊戲，所以需要開兩個
+    ，畢竟是對戰遊戲，所以需要開兩個
   * 還沒有帳號所以申請兩個
     * 在**c1**按signin底下的**Don't have an account? Sign Up**
     * **分別在firstname, lastname, Email Address, password輸入名、姓、信箱、密碼**
