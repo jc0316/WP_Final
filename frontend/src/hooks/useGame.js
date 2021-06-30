@@ -24,7 +24,7 @@ const useBoard=()=>{
     const [turn, setTurn]=useState('e') 
     const [player, setPlayer]=useState(['null','e',true,[0,0,0]]) 
     const [opponent, setOpponent]=useState(['null', 'e',true,[0,0,0]])
-    const [status, setStatus] = useState('signin')
+    const [status, setStatus] = useState('matching')
     const [gameResult, setGameResult] = useState(['',''])
     const [msg,setMsg]=useState({content:""})
 
