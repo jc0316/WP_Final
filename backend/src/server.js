@@ -145,7 +145,7 @@ wss.on('connection', function connection(client){
         if(!user){
           client.sendEvent([
             'ERROR',
-            'User does not exist!!'
+            'User does not exist or Wrong password!!'
           ])
         }
         else{
