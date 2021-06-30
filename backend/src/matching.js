@@ -43,8 +43,6 @@ const matching = async (client1, client2)=>{
         'START',
         [new_game,"second"]
     ])
-    const this_game = Game.find({})[0]
-    return this_game
 }
 
 module.exports = matching

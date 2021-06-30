@@ -47,14 +47,27 @@ const check=(name,password)=>{
   
    return null
 }
-const start_match = async (client, clients)=>{
-  await Game.deleteMany({}, (err)=>console.log(err))
-  client.sendEvent([
-    'WAITING',
-    {client, clients}
-  ])
-  if(clients.length == 2){
-    matching(clients[0], clients[1])
+// const start_match = async (client, clients)=>{
+//   await Game.deleteMany({}, (err)=>console.log(err))
+//   client.sendEvent([
+//     'WAITING',
+//     {client, clients}
+//   ])
+//   if(clients.length == 2){
+//     matching(clients[0], clients[1])
+//   }
+// }
+const start_match =  (unmatch_clients, ingame_clients)=>{
+  unmatch_clients.forEach(async(client)=>{
+    await client.sendEvent([
+      'WAITING',
+      ''
+    ])
+  })
+  if(unmatch_clients.length == 2){
+    matching(unmatch_clients[0], unmatch_clients[1])
+    const clients = unmatch_clients.splice(0,2)
+    ingame_clients.push(clients)
   }
 }
 /* -------------------------------------------------------------------------- */
@@ -64,7 +77,14 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({
   server,
 });
-var clients=[]
+var unmatch_clients=[]
+var ingame_clients=[]
+
+setInterval(()=>{
+
+  start_match(unmatch_clients, ingame_clients)
+
+}, 1000)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
@@ -110,8 +130,8 @@ wss.on('connection', function connection(client){
       }
       case 'CANCEL':{
         const name = data
-        const found = clients.findIndex(element => element.username===name);
-        clients.splice(found,1)
+        const found = unmatch_clients.findIndex(element => element.username===name);
+        unmatch_clients.splice(found,1)
         break
       }
       case "SIGN_IN": {
@@ -130,12 +150,12 @@ wss.on('connection', function connection(client){
             client.username = user.name
             client.email = user.email
             client.history = user.history
-            clients.push(client)
+            unmatch_clients.push(client)
             client.sendEvent([
               'SIGN_IN',
               [user.name, user.email, user.history]
             ])
-            start_match(client, clients)
+            // start_match(client, clients)
             
           }
           else{
@@ -150,10 +170,15 @@ wss.on('connection', function connection(client){
 
       case "PLACE": {
         const { col, row, username } = data
-        let game = await Game.findOne({})
+        let game = await Game.findOne({ $or: [{'players.white.name':username}, {'players.black.name':username}]})
+        const this_game = ingame_clients.findIndex((clients)=>{
+          return ((clients[0].email===game.players.white.email && clients[1].email===game.players.black.email) ||
+                  (clients[0].email===game.players.black.email && clients[1].email===game.players.white.email))
+        })
+
         const something = board.place(col, row, game, username)
-        // console.log(something)
-        // if (game === new_game)
+        console.log("something")
+        console.log(something)
         if (something === 'Not your turn!'){
           client.sendEvent([
             'ERROR',
@@ -180,37 +205,39 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.tie": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.tie": 1 }})
           }
-          clients.forEach( (client)=>{
+          ingame_clients[this_game].forEach( (client)=>{
             client.sendEvent([
               'END',
               [game, winner]
             ])
           })
-          clients=[]
+          ingame_clients.splice(this_game, 1)
+          await Game.deleteOne({ $or: [{'players.white.name':username}, {'players.black.name':username}]})
         }
         else {
-          clients.forEach(async (client)=>{
-            client.sendEvent([
-              'PLACE',
-              something
-            ])
+          ingame_clients[this_game].forEach( (client)=>{
+              client.sendEvent([
+                'PLACE',
+                something
+              ])
           })
-          await Game.updateOne({}, game)
+          await Game.updateOne({ $or: [{'players.white.name':username}, {'players.black.name':username}]}, something)
         }
         break
       }
       case "LOGOUT":{
-        const player = data
-        var s = clients
-        clients=s.filter(element => element.username !== player)
-        
         
         break
       }
       case "TIMEOUT":{
         const player = data
         let winner = 'w'
-        let game = await Game.findOne({})
+        let game = await Game.findOne({ $or: [{'players.white.name': player[0]}, {'players.black.name': player[0]}]})
+
+        const this_game = ingame_clients.findIndex((clients)=>{
+          return ((clients[0].email===game.players.white.email && clients[1].email===game.players.black.email) ||
+                  (clients[0].email===game.players.black.email && clients[1].email===game.players.white.email))
+        })
         if(player[1] === 'b') {
           await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
           await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
@@ -220,18 +247,17 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
         }
-        clients.forEach( (client)=>{
-          client.sendEvent([
-            'END',
-            [game, winner]
-          ])
+        ingame_clients[this_game].forEach((client)=>{
+            client.sendEvent([
+              'END',
+              [game, winner]
+            ])
         })
-        clients=[]
+
+        ingame_clients.splice(this_game, 1)
       }
       case "NEWGAME":{
         const player = data
-        var s = clients
-        clients=s.filter(element => element.username !== player)
         const user = await Name.findOne({name:player})
         client.sendEvent([
           'NEWGAME',
@@ -241,8 +267,14 @@ wss.on('connection', function connection(client){
       }
       case "RESIGN":{
         const player = data
+
         let winner = 'w'
-        let game = await Game.findOne({})
+        let game = await Game.findOne({ $or: [{'players.white.name': player[0]}, {'players.black.name': player[0]}]})
+
+        const this_game = ingame_clients.findIndex((clients)=>{
+          return ((clients[0].email===game.players.white.email && clients[1].email===game.players.black.email) ||
+                  (clients[0].email===game.players.black.email && clients[1].email===game.players.white.email))
+        })
         if(player[1] === 'b') {
           await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
           await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
@@ -252,17 +284,17 @@ wss.on('connection', function connection(client){
             await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
             await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
         }
-        
-        clients.forEach( (client)=>{
+        await Game.deleteOne(game)
+        ingame_clients[this_game].forEach((client)=>{
           if (client.username !== player[0]){
             client.sendEvent([
               'END',
               [game, winner]
             ])
           }
-          
         })
-        clients=[]
+          
+        ingame_clients.splice(this_game, 1)
       }
 
     }
