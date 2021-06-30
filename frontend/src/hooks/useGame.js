@@ -301,6 +301,7 @@ const useBoard=()=>{
         setStatus('signin')
         console.log(player)
         console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+        actions.pause()
         server.sendEvent([
             'RESIGN',
             player
