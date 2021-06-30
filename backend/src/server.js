@@ -207,6 +207,27 @@ wss.on('connection', function connection(client){
         
         break
       }
+      case "TIMEOUT":{
+        const player = data
+        let winner = 'w'
+        let game = await Game.findOne({})
+        if(player[1] === 'b') {
+          await Name.updateOne({email: game.players.white.email}, { $inc: { "history.win": 1 }})
+          await Name.updateOne({email: game.players.black.email}, { $inc: { "history.lost": 1 }})
+        }
+        else  {
+            winner = 'b'
+            await Name.updateOne({email: game.players.black.email}, { $inc: { "history.win": 1 }})
+            await Name.updateOne({email: game.players.white.email}, { $inc: { "history.lost": 1 }})
+        }
+        clients.forEach( (client)=>{
+          client.sendEvent([
+            'END',
+            [game, winner]
+          ])
+        })
+        clients=[]
+      }
       case "NEWGAME":{
         const player = data
         var s = clients

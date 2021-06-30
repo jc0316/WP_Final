@@ -1,7 +1,14 @@
 import {useEffect, useState} from 'react'
+import useCountDown from 'react-countdown-hook';
+
 const server = new WebSocket('ws://localhost:4000')
 server.onopen = () => console.log('Server connected2.');
 server.sendEvent = function(e) {server.send(JSON.stringify(e));}
+
+
+
+const initialTime = 10 * 1000;
+const interval = 1000; 
 
 let initboard=[
     ['e','e','e','e','e','e'],
@@ -15,8 +22,10 @@ let initboard=[
 
 
 const useBoard=()=>{
-    const [time,setTime]=useState(0)
-    const [lefttime,setLefttime]=useState(2*60*1000)
+    const [timeLeft, actions] = useCountDown(initialTime, interval);
+    const [timeLeft1, actions1] = useCountDown(initialTime, interval);
+    //const [time,setTime]=useState(0)
+    //const [lefttime,setLefttime]=useState(2*60*1000)
     const [board, setBoard]=useState(initboard)
     const [turn, setTurn]=useState('e') 
     const [player, setPlayer]=useState(['null','e',true,[0,0,0]]) 
@@ -60,16 +69,39 @@ const useBoard=()=>{
     //         await server.send(JSON.stringify(e))
     //     })
     // }
-
+    const timeout = async(player1)=>{
+       
+        await server.sendEvent([
+            'TIMEOUT',
+            player1
+        ])
+    }
     
     useEffect(()=>{
-        console.log(lefttime)
-        console.log(time, Date.now())
+        console.log(timeLeft)
+        console.log("IIIIIIIIIIIIIIIIIIIIIII")
+        console.log(timeLeft1)
+        if(timeLeft===0 && status==='ingame'){
+            actions.start(initialTime)
+            actions.pause()
+            console.log("player1 lose")
+            timeout(player)
+            
+        }
+        else if (timeLeft1===0 && status==='ingame'){
+            actions1.start(initialTime)
+            actions1.pause()
+            console.log("player2 lose")
+            timeout(opponent)
+            
+        }
+        //console.log(lefttime)
+        //console.log(time, Date.now())
         // const timer=setInterval(()=>{
         //     setLefttime(lefttime-(Date.now()-time))
         // },1000)
         // return ()=>clearInterval(timer)
-    },[time])
+    },)
 
     const pressSignIn = async(args)=>{
         
@@ -91,7 +123,7 @@ const useBoard=()=>{
     const pressBackToSignIn = ()=>{
         setStatus('signin')
     }
-
+    
     const pressRegister = async(args)=>{
         
         const firstName = args.firstName
@@ -141,6 +173,10 @@ const useBoard=()=>{
                 const { client, clients } = data
                 console.log(client)
                 console.log(clients)
+                actions1.start()
+                actions1.pause()
+                actions.start()
+                actions.pause()
                 break
             }
 
@@ -151,18 +187,22 @@ const useBoard=()=>{
                 if (first === "first" ){
                     setPlayer([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
                     setOpponent([new_game.players.black.name,'b',true,[new_game.players.black.history.win,new_game.players.black.history.lost,new_game.players.black.history.tie]])
-                    
+                    actions1.start()
+                    actions1.pause()
+                    actions.start()
                 }
                 else{
                     setPlayer([new_game.players.black.name,'b',true,[new_game.players.black.history.win,new_game.players.black.history.lost,new_game.players.black.history.tie]])
                     setOpponent([new_game.players.white.name,'w',true,[new_game.players.white.history.win,new_game.players.white.history.lost,new_game.players.white.history.tie]])
-                    
+                    actions.start()
+                    actions.pause()
+                    actions1.start()
                 }
                 // const timer=setInterval(()=>{
                 //     setLefttime(lefttime-(Date.now()-time))
                 // },1000)
                 // return ()=>clearInterval(timer)
-                setTime(Date.now)
+                //setTime(Date.now)
                 setTurn('w')
                 setBoard(new_game.board)
 
@@ -171,10 +211,30 @@ const useBoard=()=>{
             case 'PLACE': {
                 const new_game = data
                 console.log(new_game)
+                //console.log("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
                 setTurn(new_game.turn)
                 setBoard(new_game.board)
-                setTime(Date.now())
-                setLefttime(2*60*1000)
+                
+                
+                //setTime(Date.now())
+                //console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+                //console.log((server.username === new_game.players.black.name && new_game.turn ==='b')
+                //||(server.username === new_game.players.white.name && new_game.turn ==='w'))
+                if((server.username !== new_game.players.black.name && new_game.turn ==='b')
+                ||(server.username !== new_game.players.white.name && new_game.turn ==='w')){
+                    actions.start(initialTime)
+                    actions.pause()
+                    actions1.start(initialTime)
+                    
+                }
+                else{
+                    actions1.start(initialTime)
+                    actions1.pause()
+                    actions.start(initialTime)
+                    
+                }
+                //actions1.resume()
+                
                 break
             }
             case 'END': {
@@ -183,7 +243,12 @@ const useBoard=()=>{
                 setBoard(end_game.board)
                 setGameState("end")
                 setGameResult([winner, ''])
-                
+                actions.start(initialTime)
+                actions.pause()
+                actions1.start(initialTime)
+                actions1.pause()
+                //actions.reset()
+                //actions1.reset()
                 break
             }
             case "NEWGAME":{
@@ -207,19 +272,29 @@ const useBoard=()=>{
         }
         //resetInputs();
   };
-
-
+    
 
     const place= async(row, col, username)=>{
         console.log(row, col)
+        
         prejudge(col, row)
+        //if (server.username===username){
+        //    actions1.resume()
+        //    actions.resume()
+        // }
+        // else{
+        //    actions.resume()
+        //    actions1.resume()
+        // }
         server.sendEvent([
             'PLACE',
             {col, row, username}
         ])
     }
     const handle_1x1_click=(row_index, col_index, username)=>{
+        
         place(row_index, col_index, username)
+        
     }
 
     const pressResign=async(player)=>{
@@ -255,7 +330,7 @@ const useBoard=()=>{
         setStatus('matching')
     }
 
-    let gameHooks = [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click]
+    let gameHooks = [player, timeLeft,timeLeft1, turn, opponent, board, gameResult, gameState, handle_1x1_click]
     let gameButtons = [pressResign, pressLogout, pressRestart]
 
     return [status, pressSignIn, pressSignUp, pressBackToSignIn, pressRegister, pressCancel, gameHooks, gameButtons]

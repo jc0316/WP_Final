@@ -22,14 +22,14 @@ function User(props){
     }
 
     //Todo : Add player stats
-    console.log(props.history)
+    //console.log(props.history)
     const stats = props.history // Won/Lost
     const winPercentage = ((stats[0] + stats[1]+stats[2])!==0)?(stats[0] / (stats[0] + stats[1]+stats[2]))*100:0
 
     const computeTimeleft=()=>{
         if (props.timeleft === 'xx') return ''
         else if (props.timeleft<0) return " 0:00"
-        console.log(props.timeleft)
+        //console.log(props.timeleft)
         let min=Math.floor(props.timeleft/60000)
         let sec=Math.floor((props.timeleft/1000)%60)
         let ms=Math.floor((props.timeleft/10)%100)

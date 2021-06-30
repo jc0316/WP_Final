@@ -8,11 +8,11 @@ import './maingame.css'
 
 
 function MainGame(props){
-    const [player, lefttime, turn, opponent, board, gameResult, gameState, handle_1x1_click] = props.gameHooks
+    const [player, timeLeft,timeLeft1, turn, opponent, board, gameResult, gameState, handle_1x1_click] = props.gameHooks
     const [pressResign, pressLogout, pressRestart] = props.gameButtons
 
     
-    console.log(player, opponent, turn)
+    //console.log(player, opponent, turn)
     return( 
         <div className="game">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -23,7 +23,7 @@ function MainGame(props){
                 <User 
                     color={player[1]}
                     player={player[0]}
-                    timeleft={player[1] === turn? lefttime:'xx'}
+                    timeleft={ timeLeft}
                     connected={player[2]}
                     turn={turn}
                     history = {player[3]}/>
@@ -34,7 +34,7 @@ function MainGame(props){
                     color={opponent[1]}
                     player={opponent[0]}
                     connected={opponent[2]}
-                    timeleft={opponent[1] === turn? lefttime:'xx'}
+                    timeleft={timeLeft1}
                     turn={turn}
                     history = {opponent[3]}/>
             </div>

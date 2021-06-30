@@ -15,7 +15,7 @@ const App = () => {
 
 
   const renderSwitch=(status)=>{
-    console.log("Status :", status)
+    //console.log("Status :", status)
     switch(status){
       case 'signin': return <SignIn pressSignIn={pressSignIn} pressSignUp={pressSignUp}/>;
       case 'signup' : return <SignUp pressRegister={pressRegister} pressBackToSignIn={pressBackToSignIn}/>;
