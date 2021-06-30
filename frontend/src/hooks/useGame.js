@@ -7,7 +7,7 @@ server.sendEvent = function(e) {server.send(JSON.stringify(e));}
 
 
 
-const initialTime = 5 * 1000;
+const initialTime = 15 * 1000;
 const interval = 1000; 
 
 let initboard=[
