@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
 
+html {
+    background-color: #0e3742 !important;
+}
 
 /*layout*/
 .startMenu {
@@ -24,6 +27,77 @@ h1:hover {
     transform: rotate(5deg);
 }
 
+.signin-text-top {
+    position: relative;
+    font-size: 7vw;
+    color: #ff0000;
+    -webkit-text-stroke: 0.3vw #383d52;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-shadow: red;
+}
+
+.signin-text-middle {
+    position: relative;
+    font-size: 7vw;
+    color: #d9ff00;
+    -webkit-text-stroke: 0.3vw #383d52;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.signin-text-middle::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    color: #d9ff00;
+    -webkit-text-stroke: 0.3vw #383d52;
+    border-right: 0px solid #d9ff00;
+    overflow: hidden;
+    animation: matching_animate 6s linear infinite;
+}
+
+.signin-text-bottom {
+    position: relative;
+    font-size: 7vw;
+    color: #ff0000;
+    -webkit-text-stroke: 0.3vw #383d52;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.signin-title-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.signin-title-middle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.signin-title-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.signin-title-image {
+    width: 20%;
+    height: 20%;
+    vertical-align: bottom;
+}
 
 .quit {
     display: flex;
@@ -451,7 +525,7 @@ input:focus~.bar:before {
     line-height: 0.7em;
     outline: none;
     background-color: transparent;
-    text-shadow: 0 0 10px #ffffffde;
+    text-shadow: 0px 0px 8px rgb(0, 255, 0), 0px 0px 16px rgb(255, 255, 255);
 }
 
 .endgame-newgame:hover {
@@ -471,8 +545,7 @@ input:focus~.bar:before {
     line-height: 0.7em;
     outline: none;
     background-color: transparent;
-    text-shadow: 0px 0px 30px #ff6161de;
-    text-shadow: 0px 0px 10px #ffffffde;
+    text-shadow: 0px 0px 8px rgb(255, 0, 0), 0px 0px 16px rgb(255, 255, 255);
 }
 
 .endgame-logout:hover {
@@ -618,5 +691,19 @@ input:focus~.bar:before {
             0 0 160px #52ff30de,
             0 0 320px #52ff30de,
             0 0 640px #52ff30de;
+    }
+}
+
+@keyframes matching_animate {
+
+    0%,
+    10%,
+    100% {
+        width: 0;
+    }
+
+    70%,
+    90% {
+        width: 100%;
     }
 }
