@@ -59,13 +59,10 @@ export default function SignUp(props) {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+      <div className={classes.paper} >
+        <div className='signin-title-top'>
+          <h2 className='signin-text-top' style={{alignContent:"center", color:"white"}}>Sign Up</h2>
+        </div>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

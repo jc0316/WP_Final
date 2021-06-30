@@ -397,8 +397,8 @@ input:focus~.bar:before {
 
 .User {
     margin: 30px;
-    width: 475.8px;
-    height: 300px;
+    width: 550px;
+    height: 30%;
 
     font-family: "Poppins";
 

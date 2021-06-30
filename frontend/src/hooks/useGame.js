@@ -1,13 +1,13 @@
 import {useEffect, useState} from 'react'
 import useCountDown from 'react-countdown-hook';
 
-const server = new WebSocket('ws://localhost:4000')
+const server = new WebSocket(window.location.origin.replace(/^http/, 'ws'))
 server.onopen = () => console.log('Server connected2.');
 server.sendEvent = function(e) {server.send(JSON.stringify(e));}
 
 
 
-const initialTime = 10 * 60 * 1000;
+const initialTime = 15 * 1000;
 const interval = 1000; 
 
 let initboard=[
@@ -301,6 +301,7 @@ const useBoard=()=>{
         setStatus('signin')
         console.log(player)
         console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+        actions.pause()
         server.sendEvent([
             'RESIGN',
             player
