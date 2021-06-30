@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
 
+html {
+    background-color: #0e3742 !important;
+}
 
 /*layout*/
 .startMenu {
