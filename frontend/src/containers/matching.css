@@ -15,7 +15,7 @@
   background: #252839;
 }
 
-h2 {
+.matching-h2 {
   position: relative;
   font-size: 5vw;
   color: #252839;
@@ -23,7 +23,7 @@ h2 {
   text-transform: uppercase;
 }
 
-h2::before {
+.matching-h2::before {
   content: attr(data-text);
   position: absolute;
   top: 0;

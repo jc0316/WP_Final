@@ -14,6 +14,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import yellowpiece from "../images/yellow-piece.png";
+import redpiece from "../images/red-piece.png";
+import '../style.css'
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -32,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    backgroundImage: 'url(https://store-images.s-microsoft.com/image/apps.30803.14155008925335999.d73a1ee6-ad88-44f4-b581-0e61288e7b12.77931aae-3a5d-4ae6-bb98-2689673718b8?mode=scale&q=90&h=1080&w=1920)',
+    backgroundImage: 'url(https://i.imgur.com/PlzSr1p.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -70,12 +74,20 @@ export default function SignIn(props) {
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square style={{backgroundColor : "#37bcff4d"}}>
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Placeholder for title (needs to look better)
-          </Typography>
+          <div className='signin-title-top'>
+              <h2 className='signin-text-top'>C</h2>
+              <img className="signin-title-image" src={redpiece}></img>
+              <h2 className='signin-text-top'>nnect</h2>
+            </div>
+            <div className='signin-title-middle'>
+              <h2 className='signin-text-middle'>F</h2>
+              <img className="signin-title-image" src={yellowpiece}></img>
+              <h2 className='signin-text-middle' data-text="UR" style={{color:"white"}}>ur</h2>
+            </div>
+            <div className='signin-title-bottom'>
+              <img className="signin-title-image" src={redpiece}></img>
+              <h2 className='signin-text-bottom'>nline</h2>
+            </div>
           <form className={classes.form} noValidate>
             <TextField
               variant="outlined"

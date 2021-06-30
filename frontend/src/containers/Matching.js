@@ -7,7 +7,7 @@ function Matching(props){
     return(
     <div className="matching-body">
         <div>
-          <h2 data-text="Matchmaking...">Matchmaking...</h2>
+          <h2 className="matching-h2" data-text="Matchmaking...">Matchmaking...</h2>
         </div>
         <Button variant="contained" color="primary" onClick={props.pressCancel}>Cancel</Button>
     </div>
