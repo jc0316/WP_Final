@@ -43,6 +43,7 @@ function MainGame(props){
                 {
                 gameState==="playing"?
                     <Board 
+                        turn={turn}
                         handle_1x1_click={handle_1x1_click}
                         board={board}
                         username={player[0]}/>:

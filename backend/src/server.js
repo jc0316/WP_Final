@@ -253,6 +253,7 @@ wss.on('connection', function connection(client){
               [game, winner]
             ])
         })
+        await Game.deleteOne({ $or: [{'players.white.name': player[0]}, {'players.black.name': player[0]}]})
 
         ingame_clients.splice(this_game, 1)
       }

@@ -13,6 +13,7 @@ function Board(props){
             row_index={j} 
             col_index={i}
             username={props.username}
+            turn={props.turn}
             handle_1x1_click={props.handle_1x1_click}
             value={props.board[i][j]}
           />

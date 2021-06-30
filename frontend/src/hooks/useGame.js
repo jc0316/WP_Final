@@ -35,7 +35,7 @@ const useBoard=()=>{
     const [msg,setMsg]=useState({content:""})
 
     const [gameState, setGameState] = useState('playing')
-    const prejudge = (col, row)=>{
+    const prejudge = (col, turn)=>{
         if (player[1] !== turn) return null
         else {
             if (board[col][0] !== 'e') return null
@@ -274,10 +274,10 @@ const useBoard=()=>{
   };
     
 
-    const place= async(row, col, username)=>{
+    const place= async(row, col, username, turn)=>{
         console.log(row, col)
         
-        prejudge(col, row)
+        prejudge(col, turn)
         //if (server.username===username){
         //    actions1.resume()
         //    actions.resume()
@@ -291,9 +291,9 @@ const useBoard=()=>{
             {col, row, username}
         ])
     }
-    const handle_1x1_click=(row_index, col_index, username)=>{
+    const handle_1x1_click=(row_index, col_index, username, turn)=>{
         
-        place(row_index, col_index, username)
+        place(row_index, col_index, username, turn)
         
     }
 
