@@ -68,4 +68,12 @@ Web Programming 109-2 Final Project
       * 按下signin，進到配對頁面
       * **c1按NEWGAME**，進到配對頁面，並很快配到剛剛已經在等的player2
       * c2這邊放滿15秒，就會顯示defeat的頁面，同時c1顯示victory。
-# 測試到此結束
+      
+# 每位組員負責項目
+ * 李彥緯
+   * 前後端溝通、demo影片
+ * 陳泊均
+   * 前端、deploy、demo影片
+ * 鄧又誠
+   * 後端、readme
+
